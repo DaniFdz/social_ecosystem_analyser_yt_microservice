@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.main.python.WeirdEnviromentsAnalysis.database_management \
+from src.main.python.SocialEcosystemAnalyser.database_management \
     import DatabaseManagement
 
 class TestSingleton(TestCase):
