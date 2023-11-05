@@ -2,6 +2,8 @@ import requests as req
 from ..social_ecosystem_analyser_exception \
     import SocialEcosystemAnalyserException, MessageExceptions
 
+import icecream as ic
+
 class YoutubeAPI:
     def __init__(self, api_key: str, version: str = "v3"):
         self.api_key = api_key
@@ -28,6 +30,11 @@ class YoutubeAPI:
             SocialEcosystemAnalyserException(
                 MessageExceptions.YOUTUBE_API_ERROR
             )
+        
+        if "error" in res.json() and res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
+            raise SocialEcosystemAnalyserException(
+                MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED
+            )
 
         return res.json()
 
@@ -45,12 +52,18 @@ class YoutubeAPI:
                 MessageExceptions.YOUTUBE_API_ERROR
             )
 
+        if "error" in res.json() and res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
+            raise SocialEcosystemAnalyserException(
+                MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED
+            )
+        
         return res.json()
     
     def get_videos_data(self, search_query: str, next_page_token: str):
         videos = self._videos_list_from_topic(search_query, next_page_token)
         
 
+        ic.ic(videos)
         video_ids = [video["id"]["videoId"] for video in videos["items"]]
         videos_stats = self._video_list_stats(video_ids)
 
@@ -58,6 +71,7 @@ class YoutubeAPI:
         for i, id in enumerate(video_ids):
             try:
                 videos_data.append({
+                    "topic": search_query,
                     "video_id": id,
                     "channelId": videos_stats["items"][i]["snippet"]["channelId"],
                     "description": videos_stats["items"][i]["snippet"]["description"],
@@ -70,6 +84,9 @@ class YoutubeAPI:
                 })
             except KeyError:
                 continue
+
+        if "nextPageToken" not in videos:
+            return None, videos_data
 
         return videos["nextPageToken"], videos_data
     

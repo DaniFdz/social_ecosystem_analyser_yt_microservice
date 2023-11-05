@@ -99,6 +99,14 @@ class DatabaseManagement(metaclass=SingletonMeta):
             None: If there is no next page token
         """
         return self.__db['next_page_token'].find_one()['token']
+
+    def delete_next_page_token(self):
+        """Delete the next page token from the database
+
+        Returns:
+            int: Number of tokens deleted
+        """
+        return self.__db['next_page_token'].delete_many({}).deleted_count
     
         
     @property

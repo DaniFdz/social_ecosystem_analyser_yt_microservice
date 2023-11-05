@@ -10,7 +10,7 @@ class TestApiResponse(TestCase):
         """Test if the singleton works"""
         
         youtubeApi = YoutubeAPI(YOUTUBE_API_KEY)
-        response = youtubeApi.videos_list_from_topic("videojuegos")
+        response = youtubeApi._videos_list_from_topic("games", None)
 
         self.assertTrue(response is not None)
 
