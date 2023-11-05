@@ -78,6 +78,27 @@ class DatabaseManagement(metaclass=SingletonMeta):
             int: Number of videos deleted
         """
         return self.__db['videos'].delete_many({"_id": {"$in": ids}}).deleted_count
+
+    def save_next_page_token(self, token: str):
+        """Save the next page token in the database, if it doesn't exist, it will be created
+
+        Args:
+            token (str): Next page token
+        """
+        self.__db['next_page_token'].update_one(
+            {"_id": "next_page_token"},
+            {"$set": {"token": token}},
+            upsert=True
+        )
+
+    def get_next_page_token(self):
+        """Get the next page token from the database
+
+        Returns:
+            str: Next page token
+            None: If there is no next page token
+        """
+        return self.__db['next_page_token'].find_one()['token']
     
         
     @property
