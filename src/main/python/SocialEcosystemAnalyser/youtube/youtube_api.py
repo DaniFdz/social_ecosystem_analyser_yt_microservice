@@ -26,15 +26,19 @@ class YoutubeAPI:
             params["pageToken"] = next_page_token
 
         res = req.get(url, params=params)
-        if res.status_code != 200:
-            SocialEcosystemAnalyserException(
-                MessageExceptions.YOUTUBE_API_ERROR
-            )
-        
-        if "error" in res.json() and res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
-            raise SocialEcosystemAnalyserException(
-                MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED
-            )
+        if "error" in res.json():
+            if res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
+                raise SocialEcosystemAnalyserException(
+                    MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED
+                )
+            elif "API key not valid" in res.json()["error"]["errors"][0]["message"]:
+                raise SocialEcosystemAnalyserException(
+                    MessageExceptions.YOUTUBE_API_KEY_ERROR
+                )
+            else:
+                raise SocialEcosystemAnalyserException(
+                    MessageExceptions.YOUTUBE_API_ERROR
+                )
 
         return res.json()
 
@@ -47,15 +51,20 @@ class YoutubeAPI:
             "fields": "items(statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId))"
         }
         res = req.get(url, params=params)
-        if res.status_code != 200:
-            SocialEcosystemAnalyserException(
-                MessageExceptions.YOUTUBE_API_ERROR
-            )
-
-        if "error" in res.json() and res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
-            raise SocialEcosystemAnalyserException(
-                MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED
-            )
+        
+        if "error" in res.json():
+            if res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
+                raise SocialEcosystemAnalyserException(
+                    MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED
+                )
+            elif "API key not valid" in res.json()["error"]["errors"][0]["message"]:
+                raise SocialEcosystemAnalyserException(
+                    MessageExceptions.YOUTUBE_API_KEY_ERROR
+                )
+            else:
+                raise SocialEcosystemAnalyserException(
+                    MessageExceptions.YOUTUBE_API_ERROR
+                )
         
         return res.json()
     

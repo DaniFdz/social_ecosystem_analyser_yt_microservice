@@ -2,3 +2,4 @@ pymongo==4.5.0
 python-decouple==3.8
 requests==2.31.0
 cohere==4.32
+virustotal-api==1.1.11
