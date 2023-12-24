@@ -5,9 +5,9 @@
 ### Install [🤖 Just](https://github.com/casey/just) and [🌐 Poetry](https://python-poetry.org/)
 
 ```bash
-curl -sSL https://install.python-poetry.org | python3 -
-sudo apt install cargo
+sudo apt install cargo pipx
 cargo install just
+pipx install poetry
 ```
 
 ### Add cargo bin to path

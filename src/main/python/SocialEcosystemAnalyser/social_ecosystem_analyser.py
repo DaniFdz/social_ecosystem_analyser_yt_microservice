@@ -2,13 +2,15 @@ import os
 
 from decouple import config
 
-from .youtube.youtube_api import YoutubeAPI
 from .database_management import DatabaseManagement
 from .nlp.similar_topics_generation import generate_topics
-from .social_ecosystem_analyser_exception import SocialEcosystemAnalyserException, MessageExceptions
+from .social_ecosystem_analyser_exception import (
+    MessageExceptions, SocialEcosystemAnalyserException)
+from .youtube.youtube_api import YoutubeAPI
 
-YOUTUBE_API_KEY = config('YOUTUBE_API_KEY')
-COHERE_API_KEY = config('COHERE_API_KEY')
+YOUTUBE_API_KEY = config("YOUTUBE_API_KEY")
+COHERE_API_KEY = config("COHERE_API_KEY")
+
 
 def our_exit():
     """ Exit the program
@@ -17,7 +19,6 @@ def our_exit():
     """
     os.kill(os.getpid(), 9)
 
-    
 
 def main():
     """ Main program function """
@@ -25,7 +26,7 @@ def main():
     youtube_api = YoutubeAPI(YOUTUBE_API_KEY)
 
     topic = input("Enter a topic: ")
-    
+
     try:
         topics = generate_topics(topic, COHERE_API_KEY)
     except SocialEcosystemAnalyserException as e:
@@ -42,15 +43,15 @@ def main():
                 next_page_token = database_management.get_next_page_token()
             except TypeError:
                 next_page_token = None
-            
-            next_page_token, videos_data = youtube_api.get_videos_data(topics[i], next_page_token)
+
+            next_page_token, videos_data = youtube_api.get_videos_data(
+                topics[i], next_page_token)
 
             if next_page_token is None:
                 i += 1
                 if database_management.delete_next_page_token() == 0:
                     raise SocialEcosystemAnalyserException(
-                        MessageExceptions.MONGO_DB_DELETE_ERROR
-                    )  
+                        MessageExceptions.MONGO_DB_DELETE_ERROR)
             else:
                 database_management.save_next_page_token(next_page_token)
 
@@ -61,6 +62,7 @@ def main():
     except SocialEcosystemAnalyserException as e:
         print(e)
         our_exit()
+
 
 if __name__ == "__main__":
     main()

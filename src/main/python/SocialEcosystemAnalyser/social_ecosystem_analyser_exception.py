@@ -13,6 +13,7 @@ class SocialEcosystemAnalyserException(Exception):
     def message(self, value):
         self.__message = value
 
+
 class MessageExceptions:
     """MessageException class"""
     YOUTUBE_API_ERROR = "Error in Youtube API"

@@ -1,19 +1,18 @@
 from unittest import TestCase
-from decouple import config
-from src.main.python.SocialEcosystemAnalyser.database_management \
-    import DatabaseManagement
-from src.main.python.SocialEcosystemAnalyser.\
-    social_ecosystem_analyser_exception \
-    import SocialEcosystemAnalyserException, MessageExceptions
 
-YOUTUBE_API_KEY = config('YOUTUBE_API_KEY')
+from decouple import config
+
+from src.main.python.SocialEcosystemAnalyser.database_management import \
+    DatabaseManagement
+
+YOUTUBE_API_KEY = config("YOUTUBE_API_KEY")
+
 
 class TestDatabaseManagement(TestCase):
-   
     @classmethod
     def setUpClass(cls):
         cls.dm = DatabaseManagement()
-    
+
     @classmethod
     def tearDownClass(cls):
         cls.dm.__del__()
@@ -53,10 +52,8 @@ class TestDatabaseManagement(TestCase):
         ids = self.dm.add_videos(*videos)
         self.assertEqual(self.dm.delete_videos(*ids), 1)
 
-    
     def test_delete_videos(self):
         """Test if videos are deleted correctly from the database"""
         videos = [{"test": "test"}, {"test": "test"}]
         ids = self.dm.add_videos(*videos)
         self.assertEqual(self.dm.delete_videos(*ids), 2)
-        

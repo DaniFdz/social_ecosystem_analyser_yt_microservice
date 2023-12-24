@@ -1,6 +1,8 @@
 """class SingletonMeta"""
+
+
 class SingletonMeta(type):
-    _instances = {}
+    _instances = {}  # type: ignore
 
     def __call__(cls, *args, **kwargs):
         """

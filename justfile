@@ -1,8 +1,22 @@
+# Install dependencies
 install:
-    pip install -r requirements.txt
+    poetry install --no-root
+    poetry run pre-commit install
 
+
+# Update configuration files
+update:
+	poetry update
+	poetry run pip3 freeze > requirements.txt
+
+# Lint files
+lint:
+	poetry run pre-commit run --all-files
+
+# Initiate database with docker
 db:
     docker.exe compose up -d
 
+# Run the program
 run:
-    python3.10 -m src.main.python.SocialEcosystemAnalyser.social_ecosystem_analyser
+    poetry run python3 -m src.main.python.SocialEcosystemAnalyser.social_ecosystem_analyser
