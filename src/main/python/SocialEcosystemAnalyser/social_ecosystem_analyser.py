@@ -56,6 +56,7 @@ def main():
 
             ids = database_management.add_videos(*videos_data)
             print(f"[i] Added {len(ids)} videos to the database")
+            break
 
     except SocialEcosystemAnalyserException as e:
         print(e)
