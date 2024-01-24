@@ -28,7 +28,7 @@ just install
 - [ ] Firmar anexo 3 Claúsula 2
 - [ ] Cambiar our_exit()
 
-- [ ] Migrar a poetry
+- [X] Migrar a poetry
 - [X] Recibir comentarios del vídeo
 - [ ] Recibir subtitulos?(OAuth2)
 
