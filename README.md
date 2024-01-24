@@ -25,9 +25,12 @@ just install
 
 ## ToDo's
 
-- [ ] Firmar anexo 3 Claúsula 2
-- [X] Cambiar our_exit()
+- [ ] Plantilla LaTeX
+- [ ] Incluir contenido con respecto a la busqueda de otras redes sociales en dos paginas
+- [X] Firmar anexo 3 Claúsula 2
+    - [ ] Confirmar con Chema que está bien
 
+- [X] Cambiar our_exit()
 - [X] Migrar a poetry
 - [X] Recibir comentarios del vídeo
 - [ ] Recibir subtitulos?(OAuth2)
@@ -37,15 +40,14 @@ just install
 - [ ] Temas de privacidad, eliminar datos sensibles, crear identificador único para cada usuario
 
 - [ ] Como sabemos a dónde nos redirige el vídeo?
-
+    - [ ] Regex para detectar los links de los vídeos
     - Crawler que recorra la web alojada en la url y las urls que contenga la web recursivamente (No es legal)
 
 - [ ] Crear un modelo de datos
-
 - [ ] Preprocesado de los datos
 
 - [ ] Crear un modelo de clasificación
 - [ ] Entrenar el modelo
 - [ ] Evaluar el modelo
 
-- [ ] Interfaz de usuario
+- [ ] Interfaz de usuario ( Vue? )
