@@ -12,13 +12,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin
     networks:
       - default
-  # python-app:
-  #   build: .
-  #   container_name: my-python-app
-  #   depends_on:
-  #     - mongodb
-  #   networks:
-  #     - default
 
 volumes:
   mongodb_data:
