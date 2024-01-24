@@ -26,7 +26,7 @@ just install
 ## ToDo's
 
 - [ ] Firmar anexo 3 Claúsula 2
-- [ ] Cambiar our_exit()
+- [X] Cambiar our_exit()
 
 - [X] Migrar a poetry
 - [X] Recibir comentarios del vídeo

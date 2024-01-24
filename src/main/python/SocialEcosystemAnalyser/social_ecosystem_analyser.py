@@ -1,4 +1,4 @@
-import os
+import sys
 
 from decouple import config
 
@@ -17,7 +17,9 @@ def our_exit():
 
         TODO: This function should be chaged entirely
     """
-    os.kill(os.getpid(), 9)
+    db = DatabaseManagement()
+    db.__del__()
+    sys.exit()
 
 
 def main():

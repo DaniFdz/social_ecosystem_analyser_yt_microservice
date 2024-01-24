@@ -7,6 +7,7 @@ from .social_ecosystem_analyser_exception import (
 
 
 class DatabaseManagement(metaclass=SingletonMeta):
+    """Class to manage the database"""
     def __init__(self):
         MONGO_USERNAME = config("MONGO_USERNAME")
         MONGO_PASSWORD = config("MONGO_PASSWORD")
