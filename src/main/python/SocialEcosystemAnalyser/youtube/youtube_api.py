@@ -73,7 +73,7 @@ class YoutubeAPI:
         return res.json()
 
     def _comments_list_from_video(self, search_query: str,
-                                  next_page_token: str):
+                                  next_page_token: str, authorChannelId: str):
         url = self.base_url + "commentThreads"
         params = {
             "key":
@@ -111,18 +111,20 @@ class YoutubeAPI:
                     f'{MessageExceptions.YOUTUBE_API_ERROR}: {res.json()["error"]["errors"][0]["message"]}'
                 )
 
-        return list(
-            map(
-                lambda x: {
-                    "authorId":
-                    x["snippet"]["topLevelComment"]["snippet"][
-                        "authorChannelId"]["value"],
+        data = []
+        for x in res.json()["items"]:
+            if "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"]:
+                data.append({
+                    "isAuthor":
+                    x["snippet"]["topLevelComment"]["snippet"]
+                    ["authorChannelId"]["value"] == authorChannelId,
                     "textDisplay":
                     x["snippet"]["topLevelComment"]["snippet"]["textDisplay"],
                     "likeCount":
                     x["snippet"]["topLevelComment"]["snippet"]["likeCount"]
-                },
-                res.json()["items"]))
+                })
+
+        return data
 
     # ToDo: Need to implement OAuth2.0 to get subtitles
     # def _subtitles_from_video(self, search_query: str, next_page_token: str):
@@ -178,20 +180,18 @@ class YoutubeAPI:
 
         comments = []
         # subtitles = []
-        for video_id in video_ids:
-            comments.append(self._comments_list_from_video(video_id, ""))
+        for i, video_id in enumerate(video_ids):
+            comments.append(
+                self._comments_list_from_video(
+                    video_id, "", videos_stats[i]["snippet"]["channelId"]))
             # subtitles.append(self._subtitles_from_video(video_id, ""))
 
         videos_data = []
-        for i, video_id in enumerate(video_ids):
+        for i in range(len(video_ids)):
             try:
                 videos_data.append({
                     "topic":
                     search_query,
-                    "video_id":
-                    video_id,
-                    "channelId":
-                    videos_stats[i]["snippet"]["channelId"],
                     "description":
                     videos_stats[i]["snippet"]["description"],
                     "title":

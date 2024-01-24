@@ -37,7 +37,7 @@ just install
 
 - [X] Verificar idioma
 
-- [ ] Temas de privacidad, eliminar datos sensibles, crear identificador único para cada usuario
+- [X] Temas de privacidad, eliminar datos sensibles
 
 - [ ] Como sabemos a dónde nos redirige el vídeo?
     - [ ] Regex para detectar los links de los vídeos
