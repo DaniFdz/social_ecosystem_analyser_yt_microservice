@@ -7,8 +7,9 @@ from ..social_ecosystem_analyser_exception import (
 
 
 class YoutubeAPI:
-    def __init__(self, api_key: str, version: str = "v3"):
+    def __init__(self, api_key: str, oauth2_token: str, version: str = "v3"):
         self.api_key = api_key
+        self.oauth2_token = oauth2_token
         self.base_url = f"https://www.googleapis.com/youtube/{version}/"
 
     def _videos_list_from_topic(
@@ -126,37 +127,41 @@ class YoutubeAPI:
 
         return data
 
-    # ToDo: Need to implement OAuth2.0 to get subtitles
-    # def _subtitles_from_video(self, search_query: str, next_page_token: str):
-    #     url = self.base_url + "captions/list"
-    #     params = {
-    #         "key": self.api_key,
-    #         "part": "id,snippet",
-    #         "videoId": search_query,
-    #         "maxResults": 100,
-    #         "fields": "nextPageToken,items(id,snippet(text))"
-    #     }
+    def _subtitles_from_video(self, search_query: str):
+        url = self.base_url + "captions/list"
+        params = {
+            "key": self.api_key,
+            "part": "id,snippet",
+            "videoId": search_query,
+            "maxResults": 100,
+        }
+        headers = {
+            "Authorization": f"Bearer {self.oauth2_token}",
+        }
 
-    #     if next_page_token is not None:
-    #         params["pageToken"] = next_page_token
+        res = req.get(url, params=params, headers=headers)
 
-    #     res = req.get(url, params=params)
+        ic.ic(res.json())
 
-    #     if "error" in res.json():
-    #         if res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
-    #             raise SocialEcosystemAnalyserException(
-    #                 f"{MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED}: {res.json()["error"]["errors"][0]["message"]}"
-    #             )
-    #         elif "API key not valid" in res.json()["error"]["errors"][0]["message"]:
-    #             raise SocialEcosystemAnalyserException(
-    #                 f"{MessageExceptions.YOUTUBE_API_KEY_ERROR}: {res.json()["error"]["errors"][0]["message"]}"
-    #             )
-    #         else:
-    #             raise SocialEcosystemAnalyserException(
-    #                 f"{MessageExceptions.YOUTUBE_API_ERROR}: {res.json()["error"]["errors"][0]["message"]}"
-    #             )
+        if "error" in res.json():
+            if res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
+                raise SocialEcosystemAnalyserException(
+                    f'{MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED}: {res.json()["error"]["errors"][0]["message"]}'
+                )
+            elif "API key not valid" in res.json(
+            )["error"]["errors"][0]["message"]:
+                raise SocialEcosystemAnalyserException(
+                    f'{MessageExceptions.YOUTUBE_API_KEY_ERROR}: {res.json()["error"]["errors"][0]["message"]}'
+                )
+            elif "could not be found" in res.json(
+            )["error"]["errors"][0]["message"]:
+                return []
+            else:
+                raise SocialEcosystemAnalyserException(
+                    f'{MessageExceptions.YOUTUBE_API_ERROR}: {res.json()["error"]["errors"][0]["message"]}'
+                )
 
-    #     return res.json()
+        return res.json()
 
     def get_videos_data(self, search_query: str, next_page_token: str):
         videos = self._videos_list_from_topic(search_query, next_page_token)
@@ -179,12 +184,12 @@ class YoutubeAPI:
         videos_stats = [videos_stats["items"][i] for i in indexes]
 
         comments = []
-        # subtitles = []
+        subtitles = []
         for i, video_id in enumerate(video_ids):
             comments.append(
                 self._comments_list_from_video(
                     video_id, "", videos_stats[i]["snippet"]["channelId"]))
-            # subtitles.append(self._subtitles_from_video(video_id, ""))
+            subtitles.append(self._subtitles_from_video(video_id))
 
         videos_data = []
         for i in range(len(video_ids)):

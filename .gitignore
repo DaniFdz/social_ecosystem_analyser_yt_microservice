@@ -2,3 +2,4 @@ __pycache__/
 *.env
 venv/
 mongodb_data/
+secrets/
