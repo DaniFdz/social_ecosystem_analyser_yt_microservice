@@ -1,11 +1,6 @@
-import json
-import os
 import sys
 
 from decouple import config
-from oauth2client.client import OAuth2WebServerFlow
-from oauth2client.file import Storage
-from oauth2client.tools import run_flow
 
 from .database_management import DatabaseManagement
 from .nlp.similar_topics_generation import generate_topics
@@ -14,10 +9,6 @@ from .social_ecosystem_analyser_exception import (
 from .youtube.youtube_api import YoutubeAPI
 
 YOUTUBE_API_KEY = config("YOUTUBE_API_KEY")
-OAUTH_CLIENT_ID = config("OAUTH_CLIENT_ID")
-OAUTH_CLIENT_SECRET = config("OAUTH_CLIENT_SECRET")
-OAUTH_SCOPE = config("OAUTH_SCOPE")
-OAUTH_REDIRECT_URI = config("OAUTH_REDIRECT_URI")
 COHERE_API_KEY = config("COHERE_API_KEY")
 
 
@@ -33,18 +24,8 @@ def our_exit():
 
 def main():
     """ Main program function """
-    if not os.path.exists("creds.data"):
-        flow = OAuth2WebServerFlow(client_id=OAUTH_CLIENT_ID,
-                                   client_secret=OAUTH_CLIENT_SECRET,
-                                   scope=OAUTH_SCOPE,
-                                   redirect_uri=OAUTH_REDIRECT_URI)
-        storage = Storage("creds.data")
-        oauth_token = run_flow(flow, storage).access_token
-    else:
-        oauth_token = json.load(open("creds.data", "r"))["access_token"]
-
     database_management = DatabaseManagement()
-    youtube_api = YoutubeAPI(YOUTUBE_API_KEY, oauth_token)
+    youtube_api = YoutubeAPI(YOUTUBE_API_KEY)
 
     topic = input("Enter a topic: ")
 
