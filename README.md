@@ -33,7 +33,7 @@ just install
 - [X] Cambiar our_exit()
 - [X] Migrar a poetry
 - [X] Recibir comentarios del vídeo
-- [ ] Recibir subtitulos?(OAuth2)
+- [X] Recibir subtitulos?(OAuth2)
 
 - [X] Verificar idioma
 
