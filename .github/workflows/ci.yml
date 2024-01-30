@@ -38,11 +38,11 @@ jobs:
       run: just install
     - name: Linting
       run: just lint
-    # - name: Testing and coverage report
-    #   env:
-    #     YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-    #     VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
-    #     COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
-    #     MONGO_USERNAME: admin
-    #     MONGO_PASSWORD: admin
-    #   run: just coverage
+    - name: Testing and coverage report
+      env:
+        YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+        COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+        MONGO_USERNAME: admin
+        MONGO_PASSWORD: admin
+      run: just coverage
