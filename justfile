@@ -1,8 +1,13 @@
-# Install dependencies
-install:
-    poetry install --no-root
-    poetry run pre-commit install
+# Setup poetry
+setup:
+	poetry config virtualenvs.create true --local
+	poetry config virtualenvs.in-project true --local
 
+# Install dependencies
+install: setup
+	poetry install --no-root
+	poetry run pre-commit install
+	poetry run pip install django-admin-honeypot-updated-2021
 
 # Update configuration files
 update:
