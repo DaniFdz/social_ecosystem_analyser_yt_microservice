@@ -1,5 +1,18 @@
 # TFG
 
+## Setup CI/CD
+```bash
+# Create ssh key and add it to folder ~/.ssh/authorized_keys
+ssh-keygen -t rsa -b 4096 -f ~/.ssh/droplet_tfg
+cat ~/.ssh/droplet_tfg.pub
+
+ssh root@<ip> -i ~/.ssh/droplet_tfg
+###
+# Create a key to clone the repo from github and it to personal ssh-keys
+ssh-keygen -t rsa -b 4096
+cat ~/.ssh/id_rsa.pub
+```
+
 ## Installation
 
 ### Install [🤖 Just](https://github.com/casey/just) and [🌐 Poetry](https://python-poetry.org/)

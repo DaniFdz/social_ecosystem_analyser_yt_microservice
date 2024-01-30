@@ -29,3 +29,12 @@ db_down:
 # Run the program
 run: db_up
     poetry run python3 -m src.main.python.SocialEcosystemAnalyser.social_ecosystem_analyser
+
+# Run tests
+test:
+	poetry run python3 -m unittest discover -s src/unittest/python -p "test_*.py"
+
+# Run tests with coverage
+coverage:
+	poetry run coverage run -m unittest discover -s src/unittest/python -p "test_*.py"
+	poetry run coverage report -m

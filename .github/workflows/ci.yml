@@ -1,0 +1,48 @@
+name: Django CI
+
+on: [pull_request, workflow_call]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: mongo:7.0.2-jammy
+        env:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: admin
+        ports:
+          - "27017:27017"
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+    - uses: extractions/setup-just@v1
+      with:
+        just-version: '1.4.0'
+    - name: Install poetry
+      uses: abatilo/actions-poetry@v2
+    - name: Setup a local virtual environment (if no poetry.toml file)
+      run: just setup
+    - name: Define a cache for the virtual environment based on the dependencies lock file
+      uses: actions/cache@v3
+      with:
+        path: ./.venv
+        key: venv-${{ hashFiles('poetry.lock') }}
+    - name: Install the project dependencies
+      run: just install
+    - name: Linting
+      run: just lint
+    # - name: Testing and coverage report
+    #   env:
+    #     YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+    #     VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+    #     COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+    #     MONGO_USERNAME: admin
+    #     MONGO_PASSWORD: admin
+    #   run: just coverage
