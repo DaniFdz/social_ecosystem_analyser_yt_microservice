@@ -51,3 +51,28 @@ just install
 - [ ] Evaluar el modelo
 
 - [ ] Interfaz de usuario ( Vue? )
+
+- [ ] Echarle un ojo:
+    - https://www.phishtool.com/
+    - https://www.notta.ai/en/blog/transcribe-youtube-video
+
+- [ ] Instagram / Twitter api free capabilities
+
+- [ ] Análisis sentimientos comentarios (Objetivo NO guardar comentarios)
+
+- [ ] Categorizar por tipos de amenaza
+- [ ] Buscar indicadores de peligrosidad
+
+- [ ] Visualizar posibles problemas de ciberseguridad
+
+- [ ] Eliminar algunos contenidos (niños, drogras) definirlos claramente
+
+- [ ] Caso de uso, este vídeo tiene indicios de amenaza
+
+- [ ] Borrador con decisiones de diseño y requisitos
+
+- [ ] Roles:
+    Sysadmin
+    Curador de contenidos
+    Usuario proactivo (input: URL; output: malignidad)
+    Usuario analista de datos: (input: palabra, criterio output: grafo con pesos)
