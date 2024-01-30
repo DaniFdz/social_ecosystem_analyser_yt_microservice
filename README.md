@@ -38,8 +38,17 @@ just install
 
 ## ToDo's
 
-- [ ] Plantilla LaTeX
-- [ ] Incluir contenido con respecto a la busqueda de otras redes sociales en dos paginas
+- [ ] Pasar ToDo's a trello
+
+- [ ] CI/CD
+    - [ ] Migrar tests a pytest
+    - [ ] Arreglar tests y coverage
+    - [ ] Añadir variables de entorno a github (youtube, cohere y virustotal)
+    - [X] Setup DigitalOcean droplet
+    - [ ] Descargar docker compose
+    - [ ] Setup Cronjobs
+        https://www.airplane.dev/blog/docker-cron-jobs-how-to-run-cron-inside-containers
+
 - [X] Firmar anexo 3 Claúsula 2
     - [ ] Confirmar con Chema que está bien
 
@@ -52,24 +61,13 @@ just install
 
 - [X] Temas de privacidad, eliminar datos sensibles
 
-- [ ] Como sabemos a dónde nos redirige el vídeo?
-    - [ ] Regex para detectar los links de los vídeos
-    - Crawler que recorra la web alojada en la url y las urls que contenga la web recursivamente (No es legal)
-
-- [ ] Crear un modelo de datos
-- [ ] Preprocesado de los datos
-
-- [ ] Crear un modelo de clasificación
-- [ ] Entrenar el modelo
-- [ ] Evaluar el modelo
-
-- [ ] Interfaz de usuario ( Vue? )
+- [ ] Interfaz de usuario ( Astro )
 
 - [ ] Echarle un ojo:
     - https://www.phishtool.com/
     - https://www.notta.ai/en/blog/transcribe-youtube-video
 
-- [ ] Instagram / Twitter api free capabilities
+- [ ] Instagram / Twitter api investigar free capabilities
 
 - [ ] Análisis sentimientos comentarios (Objetivo NO guardar comentarios)
 
@@ -77,15 +75,25 @@ just install
 - [ ] Buscar indicadores de peligrosidad
 
 - [ ] Visualizar posibles problemas de ciberseguridad
+    https://github.com/apexcharts/apexcharts.js
 
-- [ ] Eliminar algunos contenidos (niños, drogras) definirlos claramente
+- [ ] Eliminar algunos contenidos (niños, drogras, etc...) definirlos claramente
 
 - [ ] Caso de uso, este vídeo tiene indicios de amenaza
 
 - [ ] Borrador con decisiones de diseño y requisitos
+- [ ] Incluir contenido con respecto a la busqueda de otras redes sociales en dos paginas
 
 - [ ] Roles:
     Sysadmin
     Curador de contenidos
     Usuario proactivo (input: URL; output: malignidad)
+    |-> El mismo?
     Usuario analista de datos: (input: palabra, criterio output: grafo con pesos)
+
+- [ ] Crear un modelo de datos
+- [ ] Preprocesado de los datos
+
+- [ ] Crear un modelo de clasificación
+- [ ] Entrenar el modelo
+- [ ] Evaluar el modelo
