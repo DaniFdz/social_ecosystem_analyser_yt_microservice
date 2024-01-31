@@ -11,6 +11,42 @@ ssh root@<ip> -i ~/.ssh/droplet_tfg
 # Create a key to clone the repo from github and it to personal ssh-keys
 ssh-keygen -t rsa -b 4096
 cat ~/.ssh/id_rsa.pub
+
+# Install dependencies
+
+# Update the package index and upgrade packages
+sudo apt update -y && sudo apt upgrade -y
+
+# Install packages
+sudo apt install -y curl git
+
+# Add Docker's official GPG key:
+sudo apt update
+sudo apt install ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+
+# Install Docker related tools
+sudo apt update -y
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+mkdir -p ~/.docker/cli-plugins/
+curl -SL https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+chmod +x ~/.docker/cli-plugins/docker-compose
+
+# Add your user to the Docker group
+sudo usermod -aG docker $USER
+
+# Exit then ssh back in to pick up new permissions
+exit
+ssh ubuntu@<ip>
 ```
 
 ## Installation
@@ -35,65 +71,3 @@ Install dependencies
 ```bash
 just install
 ```
-
-## ToDo's
-
-- [ ] Pasar ToDo's a trello
-
-- [ ] CI/CD
-    - [ ] Migrar tests a pytest
-    - [ ] Arreglar tests y coverage
-    - [ ] Añadir variables de entorno a github (youtube, cohere y virustotal)
-    - [X] Setup DigitalOcean droplet
-    - [ ] Descargar docker compose
-    - [ ] Setup Cronjobs
-        https://www.airplane.dev/blog/docker-cron-jobs-how-to-run-cron-inside-containers
-
-- [X] Firmar anexo 3 Claúsula 2
-    - [ ] Confirmar con Chema que está bien
-
-- [X] Cambiar our_exit()
-- [X] Migrar a poetry
-- [X] Recibir comentarios del vídeo
-- [X] Recibir subtitulos?(OAuth2)
-
-- [X] Verificar idioma
-
-- [X] Temas de privacidad, eliminar datos sensibles
-
-- [ ] Interfaz de usuario ( Astro )
-
-- [ ] Echarle un ojo:
-    - https://www.phishtool.com/
-    - https://www.notta.ai/en/blog/transcribe-youtube-video
-
-- [ ] Instagram / Twitter api investigar free capabilities
-
-- [ ] Análisis sentimientos comentarios (Objetivo NO guardar comentarios)
-
-- [ ] Categorizar por tipos de amenaza
-- [ ] Buscar indicadores de peligrosidad
-
-- [ ] Visualizar posibles problemas de ciberseguridad
-    https://github.com/apexcharts/apexcharts.js
-
-- [ ] Eliminar algunos contenidos (niños, drogras, etc...) definirlos claramente
-
-- [ ] Caso de uso, este vídeo tiene indicios de amenaza
-
-- [ ] Borrador con decisiones de diseño y requisitos
-- [ ] Incluir contenido con respecto a la busqueda de otras redes sociales en dos paginas
-
-- [ ] Roles:
-    Sysadmin
-    Curador de contenidos
-    Usuario proactivo (input: URL; output: malignidad)
-    |-> El mismo?
-    Usuario analista de datos: (input: palabra, criterio output: grafo con pesos)
-
-- [ ] Crear un modelo de datos
-- [ ] Preprocesado de los datos
-
-- [ ] Crear un modelo de clasificación
-- [ ] Entrenar el modelo
-- [ ] Evaluar el modelo

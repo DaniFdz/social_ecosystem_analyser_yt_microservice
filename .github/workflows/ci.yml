@@ -45,4 +45,6 @@ jobs:
         COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
         MONGO_USERNAME: admin
         MONGO_PASSWORD: admin
-      run: just coverage
+        MONGO_HOST: 127.0.0.1
+        MONG_PORT: 27017
+      run: just test

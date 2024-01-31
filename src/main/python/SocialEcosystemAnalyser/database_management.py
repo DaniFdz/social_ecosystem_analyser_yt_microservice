@@ -8,7 +8,7 @@ from .social_ecosystem_analyser_exception import (
 
 class DatabaseManagement(metaclass=SingletonMeta):
     """Class to manage the database"""
-    def __init__(self):
+    def __init__(self, test=False):
         MONGO_USERNAME = config("MONGO_USERNAME")
         MONGO_PASSWORD = config("MONGO_PASSWORD")
         MONGO_HOST = config("MONGO_HOST")
@@ -28,7 +28,10 @@ class DatabaseManagement(metaclass=SingletonMeta):
                 MessageExceptions.MONGO_CONNECTION_ERROR) from err
 
         try:
-            self.db = self.__client["social_ecosystem_analyser"]
+            if test:
+                self.db = self.__client["social_ecosystem_analyser_testing"]
+            else:
+                self.db = self.__client["social_ecosystem_analyser"]
         except errors.InvalidName as err:
             raise SocialEcosystemAnalyserException(
                 MessageExceptions.MONGO_DB_NAME_ERROR) from err

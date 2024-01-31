@@ -20,11 +20,11 @@ lint:
 
 # Initiate database with docker
 db_up:
-    docker.exe compose up -d
+    docker compose up -d
 
 # Stop database
 db_down:
-    docker.exe compose down
+    docker compose down
 
 # Run the program
 run: db_up
@@ -32,9 +32,12 @@ run: db_up
 
 # Run tests
 test:
-	poetry run python3 -m unittest discover -s src/unittest/python -p "test_*.py"
+	poetry run pytest -v -rs -n auto --show-capture=no
 
 # Run tests with coverage
 coverage:
-	poetry run coverage run -m unittest discover -s src/unittest/python -p "test_*.py"
-	poetry run coverage report -m
+	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=term --cov-fail-under=100
+
+# Check the coverage of the tests and export to html
+coverage_html:
+	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=html:htmlcov --cov-report=term --cov-fail-under=100
