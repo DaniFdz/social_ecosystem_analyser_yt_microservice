@@ -1,4 +1,5 @@
-from decouple import config
+import os
+
 from pymongo import MongoClient, database, errors
 
 from .singleton_metaclass import SingletonMeta
@@ -9,10 +10,10 @@ from .social_ecosystem_analyser_exception import (
 class DatabaseManagement(metaclass=SingletonMeta):
     """Class to manage the database"""
     def __init__(self, test=False):
-        MONGO_USERNAME = config("MONGO_USERNAME")
-        MONGO_PASSWORD = config("MONGO_PASSWORD")
-        MONGO_HOST = config("MONGO_HOST")
-        MONGO_PORT = config("MONGO_PORT")
+        MONGO_USERNAME = os.environ.get("MONGO_USERNAME")
+        MONGO_PASSWORD = os.environ.get("MONGO_PASSWORD")
+        MONGO_HOST = os.environ.get("MONGO_HOST")
+        MONGO_PORT = os.environ.get("MONGO_PORT")
 
         self.__client = None
         self.__db = None

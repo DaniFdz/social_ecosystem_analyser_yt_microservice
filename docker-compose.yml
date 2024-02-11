@@ -3,6 +3,7 @@ services:
   mongodb:
     image: mongo:7.0.2-jammy
     container_name: my-mongodb
+    restart: until-stopped
     ports:
       - "27017:27017"
     volumes:
@@ -12,6 +13,12 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin
     networks:
       - default
+
+  app:
+    build: .
+    container_name: my-app
+    volumes:
+      - "./topics.txt:/opt/project/topics.txt"
 
 volumes:
   mongodb_data:

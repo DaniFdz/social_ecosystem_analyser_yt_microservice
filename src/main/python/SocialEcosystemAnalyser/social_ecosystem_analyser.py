@@ -1,6 +1,7 @@
+import os
 import sys
 
-from decouple import config
+from dotenv import load_dotenv
 
 from .database_management import DatabaseManagement
 from .nlp.similar_topics_generation import generate_topics
@@ -8,15 +9,13 @@ from .social_ecosystem_analyser_exception import (
     MessageExceptions, SocialEcosystemAnalyserException)
 from .youtube.youtube_api import YoutubeAPI
 
-YOUTUBE_API_KEY = config("YOUTUBE_API_KEY")
-COHERE_API_KEY = config("COHERE_API_KEY")
+load_dotenv()
+YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")
+COHERE_API_KEY = os.environ.get("COHERE_API_KEY")
 
 
 def our_exit():
-    """ Exit the program
-
-        TODO: This function should be chaged entirely
-    """
+    """ Exit the program"""
     db = DatabaseManagement()
     db.__del__()
     sys.exit()
@@ -27,7 +26,22 @@ def main():
     database_management = DatabaseManagement()
     youtube_api = YoutubeAPI(YOUTUBE_API_KEY)
 
-    topic = input("Enter a topic: ")
+    if not os.path.exists("topics.txt"):
+        print("[!] File topics.txt not found")
+        our_exit()
+
+    with open("topics.txt", "r") as file:
+        topics = file.readlines()
+
+    if len(topics) == 0:
+        print("[!] No topics found in topics.txt")
+        our_exit()
+
+    topic = topics[0].strip()
+    print(f"[i] Topic: {topic}")
+
+    with open("topics.txt", "w") as file:
+        file.writelines(topics[1:])
 
     try:
         topics = generate_topics(topic, COHERE_API_KEY)
