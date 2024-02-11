@@ -31,7 +31,7 @@ run: db_up
     poetry run python3 -m src.main.python.SocialEcosystemAnalyser.social_ecosystem_analyser
 
 # Run tests
-test: db_up
+test:
 	poetry run pytest -v -rs -n auto --show-capture=no
 
 # Run tests with coverage
