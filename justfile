@@ -20,18 +20,18 @@ lint:
 
 # Initiate database with docker
 db_up:
-    docker compose up -d
+    docker compose -f docker-compose.dev.yml up -d
 
 # Stop database
 db_down:
-    docker compose down
+    docker compose -f docker-compose.dev.yml down
 
 # Run the program
 run: db_up
     poetry run python3 -m src.main.python.SocialEcosystemAnalyser.social_ecosystem_analyser
 
 # Run tests
-test:
+test: db_up
 	poetry run pytest -v -rs -n auto --show-capture=no
 
 # Run tests with coverage
