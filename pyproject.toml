@@ -31,6 +31,11 @@ testpaths = ["src/tests"]
 filterwarnings = "ignore::DeprecationWarning:^(?!node\\.).*:"
 pythonpath = "."
 env_files = [".env"]
+markers = [
+    "database: tests that involves database interaction",
+    "api: tests that involves some external api interaction",
+    "unittest: tests that are unit tests",
+]
 
 [tool.coverage.run]
 omit = ["*/tests/*", "*/fixtures/*", "*/__init__.py"]

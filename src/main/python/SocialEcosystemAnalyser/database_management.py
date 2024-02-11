@@ -2,9 +2,9 @@ import os
 
 from pymongo import MongoClient, database, errors
 
-from .singleton_metaclass import SingletonMeta
-from .social_ecosystem_analyser_exception import (
+from .exceptions.social_ecosystem_analyser_exception import (
     MessageExceptions, SocialEcosystemAnalyserException)
+from .singleton_metaclass import SingletonMeta
 
 
 class DatabaseManagement(metaclass=SingletonMeta):

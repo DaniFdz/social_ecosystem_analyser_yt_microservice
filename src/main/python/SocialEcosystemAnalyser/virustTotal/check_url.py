@@ -1,6 +1,6 @@
 from virus_total_apis import PublicApi as VirusTotalPublicApi
 
-from ..social_ecosystem_analyser_exception import (  # type: ignore
+from ..exceptions.social_ecosystem_analyser_exception import (  # type: ignore
     MessageExceptions, SocialEcosystemAnalyserException)
 
 

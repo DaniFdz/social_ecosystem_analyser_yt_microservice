@@ -1,7 +1,7 @@
 # noqa
 import cohere
 
-from ..social_ecosystem_analyser_exception import (
+from ..exceptions.social_ecosystem_analyser_exception import (
     MessageExceptions, SocialEcosystemAnalyserException)
 
 

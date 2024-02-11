@@ -4,9 +4,9 @@ import sys
 from dotenv import load_dotenv
 
 from .database_management import DatabaseManagement
-from .nlp.similar_topics_generation import generate_topics
-from .social_ecosystem_analyser_exception import (
+from .exceptions.social_ecosystem_analyser_exception import (
     MessageExceptions, SocialEcosystemAnalyserException)
+from .nlp.similar_topics_generation import generate_topics
 from .youtube.youtube_api import YoutubeAPI
 
 load_dotenv()

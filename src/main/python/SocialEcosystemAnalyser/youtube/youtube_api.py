@@ -2,7 +2,7 @@ import icecream as ic  # type: ignore # noqa: F401
 import requests as req
 from langdetect import detect
 
-from ..social_ecosystem_analyser_exception import (
+from ..exceptions.social_ecosystem_analyser_exception import (
     MessageExceptions, SocialEcosystemAnalyserException)
 
 

@@ -34,6 +34,10 @@ run: db_up
 test:
 	poetry run pytest -v -rs -n auto --show-capture=no
 
+# Run tests with markers
+test_marker MARKER:
+	poetry run pytest -v -rs -n auto --show-capture=no -m {{MARKER}}
+
 # Run tests with coverage
 coverage:
 	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=term --cov-fail-under=100
@@ -41,3 +45,11 @@ coverage:
 # Check the coverage of the tests and export to html
 coverage_html:
 	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=html:htmlcov --cov-report=term --cov-fail-under=100
+
+# Run test with coverage for a specific marker
+coverage_marker MARKER:
+	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=term --cov-fail-under=100 -m {{MARKER}}
+
+# Run test with coverage for a specific marker and export to html
+coverage_html_marker MARKER:
+	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=html:htmlcov --cov-report=term --cov-fail-under=100 -m {{MARKER}}
