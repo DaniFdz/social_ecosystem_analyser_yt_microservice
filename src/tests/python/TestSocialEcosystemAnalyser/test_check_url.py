@@ -1,7 +1,9 @@
 import pytest
 
-from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyser_exception import (
-    MessageExceptions, SocialEcosystemAnalyserException)
+from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyser_exception import \
+    SocialEcosystemAnalyserException
+from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyser_messages import \
+    MessageExceptions
 from src.main.python.SocialEcosystemAnalyser.virustTotal.check_url import \
     check_url
 

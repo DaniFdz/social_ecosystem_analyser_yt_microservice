@@ -1,7 +1,9 @@
 from virus_total_apis import PublicApi as VirusTotalPublicApi
 
-from ..exceptions.social_ecosystem_analyser_exception import (  # type: ignore
-    MessageExceptions, SocialEcosystemAnalyserException)
+from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyser_exception import \
+    SocialEcosystemAnalyserException
+from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyser_messages import \
+    MessageExceptions
 
 
 def check_url(api_key: str, url: str):

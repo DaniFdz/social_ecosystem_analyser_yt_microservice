@@ -1,6 +1,6 @@
 import pytest
 
-from src.main.python.SocialEcosystemAnalyser.database_management import \
+from src.main.python.SocialEcosystemAnalyser.database.database_management import \
     DatabaseManagement
 
 

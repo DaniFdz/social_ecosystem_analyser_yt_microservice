@@ -1,11 +1,21 @@
 # noqa
+import os
+from typing import List
+
 import cohere
 
-from ..exceptions.social_ecosystem_analyser_exception import (
-    MessageExceptions, SocialEcosystemAnalyserException)
+from ..exceptions.social_ecosystem_analyser_exception import \
+    SocialEcosystemAnalyserException
+from ..exceptions.social_ecosystem_analyser_messages import MessageExceptions
 
 
-def generate_topics(topic: str, api_key: str):
+def generate_topics(topic: str) -> List[str]:
+    """
+    Generate similar topics to the given topic.
+
+    @param: topic (str): Topic to generate similar topics
+    """
+    api_key = os.environ.get("COHERE_API_KEY")
     try:
         co = cohere.Client(api_key)
         response = co.generate(

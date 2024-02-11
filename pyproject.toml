@@ -16,6 +16,7 @@ virustotal-api = "^1.1.11"
 icecream = "^2.1.3"
 langdetect = "^1.0.9"
 coverage = "^7.4.1"
+pytest-mock = "^3.12.0"
 
 
 [tool.poetry.group.dev.dependencies]
