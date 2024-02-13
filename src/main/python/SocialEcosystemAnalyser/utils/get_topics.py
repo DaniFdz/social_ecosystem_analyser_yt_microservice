@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import List
 
@@ -5,8 +6,11 @@ from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyse
     SocialEcosystemAnalyserException
 from src.main.python.SocialEcosystemAnalyser.nlp.similar_topics_generation import \
     generate_topics
+from src.main.python.SocialEcosystemAnalyser.settings import LOGGING
 
 from .exit_program import ExitProgram
+
+logging.basicConfig(format=LOGGING["formatters"]["standard"]["format"])
 
 
 class GetTopics:
@@ -14,14 +18,14 @@ class GetTopics:
     def __pop_topic_from_file(cls) -> str:
         """Read the new topic from the topics.txt file"""
         if not os.path.exists("topics.txt"):
-            print("[!] File topics.txt not found")
+            logging.error("File topics.txt not found")
             ExitProgram.exit_program(1)
 
         with open("topics.txt", "r") as file:
             topics = file.readline().strip()
 
         if topics == "":
-            print("[!] No topics found in topics.txt")
+            logging.error("sNo topics found in topics.txt")
             ExitProgram.exit_program(1)
 
         topic = topics[0].strip()
@@ -36,9 +40,9 @@ class GetTopics:
         try:
             topics = generate_topics(topic)
         except SocialEcosystemAnalyserException as e:
-            print(e)
+            logging.error(e)
             if input("Do you want to continue? (Y/n): ").lower() == "n":
-                ExitProgram.exit_program()
+                ExitProgram.exit_program(1)
             topics = [topic]
 
         return topics
@@ -49,5 +53,5 @@ class GetTopics:
 
         topics = cls.__generate_topics_from(topic)
 
-        print(f"[i] Testing topics: {topics}")
+        logging.info(f"Testing topics: {topics}")
         return topics

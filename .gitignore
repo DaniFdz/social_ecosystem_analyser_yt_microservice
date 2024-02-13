@@ -3,3 +3,4 @@ __pycache__/
 *venv/
 mongodb_data/
 secrets/
+.coverage

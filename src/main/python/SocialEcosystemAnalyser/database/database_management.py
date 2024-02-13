@@ -75,7 +75,7 @@ class DatabaseManagement(metaclass=SingletonMeta):
         else:
             return list(self.__db["videos"].find().skip(start).limit(limit))
 
-    def delete_videos(self, *ids: list):
+    def delete_videos(self, *ids: list) -> int:
         """Delete videos from the database
 
         @param: *ids (list[pymongo.ObjectId]): Id's of the videos to delete from the database

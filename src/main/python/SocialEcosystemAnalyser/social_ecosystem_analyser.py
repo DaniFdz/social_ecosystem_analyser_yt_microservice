@@ -1,15 +1,15 @@
+import logging
 import os
 
-from dotenv import load_dotenv
-
 from .database.database_management import DatabaseManagement
+from .settings import LOGGING
 from .utils.exit_program import ExitProgram
 from .utils.get_topics import GetTopics
 from .youtube.youtube_api import YoutubeAPI
 
-load_dotenv()
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")
-COHERE_API_KEY = os.environ.get("COHERE_API_KEY")
+logging.basicConfig(
+    format=LOGGING["formatters"]["standard"]["format"])  # type: ignore
 
 
 def main():
@@ -28,7 +28,7 @@ def main():
         database_management.save_next_page_token(topics, next_page_token)
 
         ids = database_management.add_videos(*videos_data)
-        print(f"[i] Added {len(ids)} videos to the database")
+        logging.info(f"Added {len(ids)} videos to the database")
         break
 
     ExitProgram.exit_program()
