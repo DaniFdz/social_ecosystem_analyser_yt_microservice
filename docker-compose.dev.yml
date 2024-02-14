@@ -15,4 +15,4 @@ services:
       - default
 
 volumes:
-  mongodb_data:
+  mongodb_data_dev:

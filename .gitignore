@@ -2,5 +2,6 @@ __pycache__/
 *.env
 *venv/
 mongodb_data/
+mongodb_data_dev/
 secrets/
 .coverage

@@ -9,16 +9,10 @@ services:
     volumes:
       - "./mongodb_data:/data/db"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PASSWORD
     networks:
       - default
-
-  app:
-    build: .
-    container_name: my-app
-    volumes:
-      - "./topics.txt:/opt/project/topics.txt"
 
 volumes:
   mongodb_data:
