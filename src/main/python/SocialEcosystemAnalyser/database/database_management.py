@@ -27,6 +27,11 @@ class DatabaseManagement(metaclass=SingletonMeta):
         MONGO_PASSWORD = os.environ.get("MONGO_PASSWORD")
         MONGO_HOST = os.environ.get("MONGO_HOST")
         MONGO_PORT = os.environ.get("MONGO_PORT")
+        DB_NAME = os.environ.get("DB_NAME")
+
+        if not MONGO_USERNAME or not MONGO_PASSWORD or not MONGO_HOST or not MONGO_PORT or not DB_NAME:
+            raise SocialEcosystemAnalyserException(
+                MessageExceptions.MONGO_ENVIRONMENT_VARIABLES_ERROR)
 
         self.__client = None
         self.__db = None
@@ -42,9 +47,9 @@ class DatabaseManagement(metaclass=SingletonMeta):
                 MessageExceptions.MONGO_CONNECTION_ERROR) from err
 
         if test:
-            self.db = self.__client["social_ecosystem_analyser_testing"]
+            self.db = self.__client[f"{DB_NAME}_testing"]
         else:
-            self.db = self.__client["social_ecosystem_analyser"]
+            self.db = self.__client[DB_NAME]
 
     def __del__(self) -> None:
         """Close the connection of the database when the class is destroyed"""
