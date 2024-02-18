@@ -36,6 +36,7 @@ markers = [
     "database: tests that involves database interaction",
     "api: tests that involves some external api interaction",
     "unittest: tests that are unit tests",
+    "integration: tests that are integration tests",
 ]
 
 [tool.coverage.run]

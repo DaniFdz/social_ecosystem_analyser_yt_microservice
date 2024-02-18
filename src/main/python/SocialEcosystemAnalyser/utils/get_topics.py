@@ -1,57 +1,64 @@
 import logging
-import os
+import sys
 from typing import List
 
+from src.main.python.SocialEcosystemAnalyser.database.topics.api_topics_repository import \
+    ApiTopicsRepository
+from src.main.python.SocialEcosystemAnalyser.database.topics.topics_repository import \
+    Topic
 from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyser_exception import \
     SocialEcosystemAnalyserException
 from src.main.python.SocialEcosystemAnalyser.nlp.similar_topics_generation import \
     generate_topics
 from src.main.python.SocialEcosystemAnalyser.settings import LOGGING
 
-from .exit_program import ExitProgram
-
 logging.basicConfig(format=LOGGING["formatters"]["standard"]["format"])
 
 
 class GetTopics:
     @classmethod
-    def __pop_topic_from_file(cls) -> str:
-        """Read the new topic from the topics.txt file"""
-        if not os.path.exists("topics.txt"):
-            logging.error("File topics.txt not found")
-            ExitProgram.exit_program(1)
-
-        with open("topics.txt", "r") as file:
-            topics = file.readline().strip()
-
-        if topics == "":
-            logging.error("sNo topics found in topics.txt")
-            ExitProgram.exit_program(1)
-
-        topic = topics[0].strip()
-
-        with open("topics.txt", "w") as file:
-            file.writelines(file.readlines()[1:])
-
-        return topic
+    def __pop_topic(cls) -> None:
+        """ "Pop the first non finished topic from the database"""
+        topics = ApiTopicsRepository.get_topics()
+        for topic in topics:
+            if not topic.finished:
+                return topic
+        return None
 
     @classmethod
     def __generate_topics_from(cls, topic: str) -> List[str]:
+        """
+        Generate similar topics from the given topic. If cohere API is not available,
+        it will return the same topic as a list.
+
+        @param topic: str
+        @return: List[str]
+        """
         try:
             topics = generate_topics(topic)
-        except SocialEcosystemAnalyserException as e:
-            logging.error(e)
-            if input("Do you want to continue? (Y/n): ").lower() == "n":
-                ExitProgram.exit_program(1)
+        except SocialEcosystemAnalyserException:
             topics = [topic]
 
         return topics
 
     @classmethod
-    def get_topics(cls) -> List[str]:
-        topic = cls.__pop_topic_from_file()
+    def get_topics(cls) -> List[Topic]:
+        topic = cls.__pop_topic()
+        if topic is None:
+            logging.error("No topics to analyse")
+            sys.exit(1)
 
-        topics = cls.__generate_topics_from(topic)
+        topics = cls.__generate_topics_from(topic.name)
 
-        logging.info(f"Testing topics: {topics}")
-        return topics
+        for t in topics:
+            if ApiTopicsRepository.get_topic_by_name(t) is None:
+                ApiTopicsRepository.create_topic(t)
+
+        topics_list = [
+            x for x in
+            [ApiTopicsRepository.get_topic_by_name(t) for t in topics]
+            if x is not None and x.finished is False
+        ]
+
+        logging.info(f"Testing topics: {topics_list}")
+        return topics_list

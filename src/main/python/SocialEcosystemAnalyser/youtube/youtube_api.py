@@ -1,6 +1,11 @@
+from typing import List, Optional, Tuple
+
 import icecream as ic  # type: ignore # noqa: F401
 import requests as req
 from langdetect import detect
+
+from src.main.python.SocialEcosystemAnalyser.database.videos.videos_repository import (
+    Comment, Video)
 
 from ..exceptions.social_ecosystem_analyser_exception import \
     SocialEcosystemAnalyserException
@@ -22,7 +27,7 @@ class YoutubeAPI:
             "q": search_query,
             "maxResults": 50,
             "language": "en",
-            "fields": "nextPageToken,items(id(videoId))"
+            "fields": "nextPageToken,items(id(videoId))",
         }
 
         if next_page_token is not None:
@@ -53,7 +58,7 @@ class YoutubeAPI:
             "id":
             ",".join(video_ids),
             "fields":
-            "items(statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId))"
+            "items(statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId))",
         }
         res = req.get(url, params=params)
 
@@ -72,7 +77,8 @@ class YoutubeAPI:
         return res.json()
 
     def _comments_list_from_video(self, search_query: str,
-                                  next_page_token: str, authorChannelId: str):
+                                  next_page_token: str,
+                                  authorChannelId: str) -> List[Comment]:
         url = self.base_url + "commentThreads"
         params = {
             "key":
@@ -84,7 +90,7 @@ class YoutubeAPI:
             "maxResults":
             100,
             "fields":
-            "items(id,snippet(topLevelComment(snippet(authorDisplayName,authorChannelId,likeCount,publishedAt,textDisplay))))"  # type: ignore # noqa: E501
+            "items(id,snippet(topLevelComment(snippet(authorDisplayName,authorChannelId,likeCount,publishedAt,textDisplay))))",  # type: ignore # noqa: E501
         }
 
         if next_page_token != "":
@@ -113,19 +119,21 @@ class YoutubeAPI:
         data = []
         for x in res.json()["items"]:
             if "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"]:
-                data.append({
-                    "isAuthor":
-                    x["snippet"]["topLevelComment"]["snippet"]
-                    ["authorChannelId"]["value"] == authorChannelId,
-                    "textDisplay":
-                    x["snippet"]["topLevelComment"]["snippet"]["textDisplay"],
-                    "likeCount":
-                    x["snippet"]["topLevelComment"]["snippet"]["likeCount"]
-                })
+                data.append(
+                    Comment(
+                        is_author=x["snippet"]["topLevelComment"]["snippet"]
+                        ["authorChannelId"]["value"] == authorChannelId,
+                        text=x["snippet"]["topLevelComment"]["snippet"]
+                        ["textDisplay"],
+                        like_count=x["snippet"]["topLevelComment"]["snippet"]
+                        ["likeCount"],
+                    ))
 
         return data
 
-    def get_videos_data(self, search_query: str, next_page_token: str):
+    def get_videos_data(
+            self, search_query: str,
+            next_page_token: str) -> Tuple[Optional[str], List[Video]]:
         videos = self._videos_list_from_topic(search_query, next_page_token)
 
         video_ids = [video["id"]["videoId"] for video in videos["items"]]
@@ -154,26 +162,22 @@ class YoutubeAPI:
         videos_data = []
         for i in range(len(video_ids)):
             try:
-                videos_data.append({
-                    "topic":
-                    search_query,
-                    "description":
-                    videos_stats[i]["snippet"]["description"],
-                    "title":
-                    videos_stats[i]["snippet"]["title"],
-                    "viewCount":
-                    int(videos_stats[i]["statistics"]["viewCount"]),
-                    "likeCount":
-                    int(videos_stats[i]["statistics"]["likeCount"]),
-                    "commentCount":
-                    int(videos_stats[i]["statistics"]["commentCount"]),
-                    "favoriteCount":
-                    int(videos_stats[i]["statistics"]["favoriteCount"]),
-                    "duration":
-                    videos_stats[i]["contentDetails"]["duration"],
-                    "comments":
-                    comments[i],
-                })
+                videos_data.append(
+                    Video(
+                        topic=search_query,
+                        description=videos_stats[i]["snippet"]["description"],
+                        title=videos_stats[i]["snippet"]["title"],
+                        viewCount=int(
+                            videos_stats[i]["statistics"]["viewCount"]),
+                        likeCount=int(
+                            videos_stats[i]["statistics"]["likeCount"]),
+                        commentCount=int(
+                            videos_stats[i]["statistics"]["commentCount"]),
+                        favoriteCount=int(
+                            videos_stats[i]["statistics"]["favoriteCount"]),
+                        duration=videos_stats[i]["contentDetails"]["duration"],
+                        comments=comments[i],
+                    ))
             except KeyError:
                 continue
 

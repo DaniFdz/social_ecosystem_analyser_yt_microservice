@@ -1,9 +1,12 @@
 import logging
 import os
+import sys
+from time import sleep
 
-from .database.database_management import DatabaseManagement
+from .database.health.api_health_repository import ApiHealthRepository
+from .database.topics.api_topics_repository import ApiTopicsRepository
+from .database.videos.api_videos_repository import ApiVideosRepository
 from .settings import LOGGING
-from .utils.exit_program import ExitProgram
 from .utils.get_topics import GetTopics
 from .youtube.youtube_api import YoutubeAPI
 
@@ -13,29 +16,40 @@ logging.basicConfig(
 
 
 def main():
-    """ Main program function """
-    database_management = DatabaseManagement()
+    """Main program function"""
+    while not ApiHealthRepository.check_health():
+        logging.warning(
+            "Database is not ready, waiting 10 seconds to retry...")
+        sleep(10)
+
     youtube_api = YoutubeAPI(YOUTUBE_API_KEY)
 
     topics = GetTopics.get_topics()
 
-    for topic in topics:
-        next_page_token = database_management.get_next_page_token(topic)
+    for topic_name in topics:
+        next_page_token = ""
+        while next_page_token is not None:
+            topic = ApiTopicsRepository.get_topic_by_name(topic_name)
+            next_page_token, videos_data = youtube_api.get_videos_data(
+                topic.name, topic.next_page_token)
 
-        next_page_token, videos_data = youtube_api.get_videos_data(
-            topic, next_page_token)
+            if next_page_token is None:
+                ApiTopicsRepository.set_topic_as_finished(topic.name)
+                ApiTopicsRepository.save_next_page_token(topic.name, "")
+            else:
+                ApiTopicsRepository.save_next_page_token(
+                    topic.name, next_page_token)
 
-        database_management.save_next_page_token(topics, next_page_token)
+            status = ApiVideosRepository.add_videos(*videos_data)
+            if status:
+                logging.info(
+                    f"Added {len(videos_data)} videos to the database")
+            else:
+                logging.error("Failed to add videos to the database")
+            break
 
-        ids = database_management.add_videos(*videos_data)
-        logging.info(f"Added {len(ids)} videos to the database")
-        break
-
-    ExitProgram.exit_program()
+    sys.exit(0)
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        ExitProgram.exit_program(exception=e)
+    main()
