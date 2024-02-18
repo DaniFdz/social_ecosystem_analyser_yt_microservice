@@ -2,8 +2,52 @@ import pytest
 
 from src.main.python.SocialEcosystemAnalyser.database.videos.api_videos_repository import \
     ApiVideosRepository
-from src.main.python.SocialEcosystemAnalyser.database.videos.videos_repository import \
-    Video
+from src.main.python.SocialEcosystemAnalyser.database.videos.videos_repository import (
+    Comment, Video)
+
+
+@pytest.mark.unittest
+class TestVideo:
+    def test_video_to_dict(self):
+        """It should return a dictionary with the video data"""
+        video = Video(
+            topic="Test",
+            description="Test",
+            title="Test",
+            view_count=0,
+            like_count=0,
+            comment_count=0,
+            favorite_count=0,
+            duration="0:00",
+            comments=[],
+        )
+        assert video.to_dict() == {
+            "topic": "Test",
+            "description": "Test",
+            "title": "Test",
+            "view_count": 0,
+            "like_count": 0,
+            "comment_count": 0,
+            "favorite_count": 0,
+            "duration": "0:00",
+            "comments": [],
+        }
+
+
+@pytest.mark.unittest
+class TestComment:
+    def test_comment_to_dict(self):
+        """It should return a dictionary with the comment data"""
+        comment = Comment(
+            is_author=True,
+            text="Test",
+            like_count=0,
+        )
+        assert comment.to_dict() == {
+            "is_author": True,
+            "text": "Test",
+            "like_count": 0,
+        }
 
 
 @pytest.mark.api

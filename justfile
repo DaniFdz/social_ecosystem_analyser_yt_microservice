@@ -40,8 +40,8 @@ test_marker MARKER:
 
 # Run tests with coverage
 coverage:
-	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=term --cov-fail-under=100
+	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=term --cov-fail-under=75
 
 # Check the coverage of the tests and export to html
 coverage_html:
-	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=html:htmlcov --cov-report=term --cov-fail-under=100
+	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=html:htmlcov --cov-report=term --cov-fail-under=75

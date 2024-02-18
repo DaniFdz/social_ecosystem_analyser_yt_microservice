@@ -37,6 +37,14 @@ class TestApiTopicsRepository:
 
         assert ApiTopicsRepository.get_topics() == topic_values
 
+    def test_get_topics_error(self, mocker):
+        """It should return an empty list if the API returns an error"""
+        mocker.patch(
+            "src.main.python.SocialEcosystemAnalyser.database.topics.api_topics_repository.r.get",
+            return_value=type("Response", (object, ), {"status_code": 204}),
+        )
+        assert ApiTopicsRepository.get_topics() == []
+
     def test_create_topic(self, mocker):
         """It should create a topic and return True if the API returns 201"""
         mocker.patch(
