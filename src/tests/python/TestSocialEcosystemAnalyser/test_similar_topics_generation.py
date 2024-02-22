@@ -1,4 +1,5 @@
 import pytest
+from dotenv import load_dotenv
 
 from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyser_exception import \
     SocialEcosystemAnalyserException
@@ -21,6 +22,7 @@ class TestSimilarTopicsGenerator:
 
     def test_invalid_api(self, mocker, invalid_api_key):
         """Test if the api key is wrong"""
+        load_dotenv()
         mocker.patch("os.environ.get", return_value=invalid_api_key)
         with pytest.raises(SocialEcosystemAnalyserException,
                            match=MessageExceptions.COHERE_API_ERROR):

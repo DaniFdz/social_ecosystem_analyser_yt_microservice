@@ -3,6 +3,7 @@ import os
 from typing import List
 
 import cohere
+from dotenv import load_dotenv
 
 from ..exceptions.social_ecosystem_analyser_exception import \
     SocialEcosystemAnalyserException
@@ -15,6 +16,7 @@ def generate_topics(topic: str) -> List[str]:
 
     @param: topic (str): Topic to generate similar topics
     """
+    load_dotenv()
     api_key = os.environ.get("COHERE_API_KEY")
     try:
         co = cohere.Client(api_key)

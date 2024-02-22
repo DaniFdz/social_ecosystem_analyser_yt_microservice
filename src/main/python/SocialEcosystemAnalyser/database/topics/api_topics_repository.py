@@ -2,11 +2,13 @@ import os
 from typing import List
 
 import requests as r
+from dotenv import load_dotenv
 
 from .topics_repository import Topic, TopicsRepository
 
 
 class ApiTopicsRepository(TopicsRepository):
+    load_dotenv()
     __api = os.environ.get("API_URL", "http://localhost:3000/")
     __endpoint = "api/v1/topics/"
     __token = os.environ.get("API_TOKEN", "")

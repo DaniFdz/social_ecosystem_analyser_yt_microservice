@@ -2,11 +2,13 @@ import os
 from typing import List
 
 import requests as r
+from dotenv import load_dotenv
 
 from .videos_repository import Video, VideosRepository
 
 
 class ApiVideosRepository(VideosRepository):
+    load_dotenv()
     __api = os.environ.get("API_URL")
     __endpoint = "api/v1/videos/"
     __token = os.environ.get("API_TOKEN")

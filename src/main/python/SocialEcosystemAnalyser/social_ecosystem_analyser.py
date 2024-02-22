@@ -3,12 +3,18 @@ import os
 import sys
 from time import sleep
 
+from dotenv import load_dotenv
+
 from .database.health.api_health_repository import ApiHealthRepository
 from .database.topics.api_topics_repository import ApiTopicsRepository
 from .database.videos.api_videos_repository import ApiVideosRepository
 from .settings import LOGGING
 from .utils.get_topics import GetTopics
 from .youtube.youtube_api import YoutubeAPI
+
+if not load_dotenv():
+    logging.error("Failed to load .env file")
+    sys.exit(1)
 
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")
 logging.basicConfig(

@@ -40,4 +40,4 @@ jobs:
           END
       - name: Run deploy
         run: |
-          ssh target "cd tfg/ && docker compose down && git pull && docker compose build && docker compose up -d --force-recreate"
+          ssh target "cd social_ecosystem_analyser_yt_microservice/ && git pull && poetry install --no-root --no-dev"

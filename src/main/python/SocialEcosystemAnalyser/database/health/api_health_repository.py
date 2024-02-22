@@ -1,11 +1,13 @@
 import os
 
 import requests as r
+from dotenv import load_dotenv
 
 from .health_repository import HealthRepository
 
 
 class ApiHealthRepository(HealthRepository):
+    load_dotenv()
     __api = os.environ.get("API_URL")
     __endpoint = "health/"
     __token = os.environ.get("API_TOKEN")
@@ -17,7 +19,7 @@ class ApiHealthRepository(HealthRepository):
 
         @return: bool: If the API is healthy
         """
-        endpoint = cls.__api + "health/"
+        endpoint = cls.__api + cls.__endpoint
         try:
             res = r.get(endpoint)
         except r.exceptions.ConnectionError:

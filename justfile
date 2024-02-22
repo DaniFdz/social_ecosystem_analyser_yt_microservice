@@ -18,16 +18,8 @@ update:
 lint:
 	poetry run pre-commit run --all-files
 
-# Initiate database with docker
-db_up:
-    docker compose -f docker-compose.dev.yml up -d
-
-# Stop database
-db_down:
-    docker compose -f docker-compose.dev.yml down
-
 # Run the program
-run: db_up
+run:
     poetry run python3 -m src.main.python.SocialEcosystemAnalyser.social_ecosystem_analyser
 
 # Run tests
