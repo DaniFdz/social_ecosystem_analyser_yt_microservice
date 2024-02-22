@@ -19,10 +19,14 @@ class ApiVideosRepository(VideosRepository):
             return False
 
         headers = {"Authorization": f"Bearer {cls.__token}"}
-        response = r.post(
-            f"{cls.__api}/{cls.__endpoint}",
-            json=[video.to_dict() for video in videos],
-            headers=headers,
-        )
+        for video in videos:
+            print(video.to_dict())
+            response = r.post(
+                f"{cls.__api}/{cls.__endpoint}",
+                data=video.to_dict(),
+                headers=headers,
+            )
+            if response.status_code != 201:
+                return False
 
-        return response.status_code == 201
+        return True

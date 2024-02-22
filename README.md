@@ -29,9 +29,11 @@ sudo apt update -y
 sudo apt install python3.11 pipx
 pipx install poetry
 
+mkdir ~/.yt_service
+
 # Exit then ssh back in to pick up new permissions
 exit
-ssh ubuntu@<ip> -i ~/.ssh/droplet_tfg
+ssh root@<ip> -i ~/.ssh/droplet_tfg
 ```
 
 ## Installation

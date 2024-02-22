@@ -131,7 +131,7 @@ class YoutubeAPI:
 
         return data
 
-    def get_videos_data(
+    def get_videos_data(  # noqa: C901
             self, search_query: str,
             next_page_token: str) -> Tuple[Optional[str], List[Video]]:
         videos = self._videos_list_from_topic(search_query, next_page_token)
@@ -143,18 +143,21 @@ class YoutubeAPI:
         for i in range(len(videos_stats["items"])):
             description = videos_stats["items"][i]["snippet"]["description"]
             title = videos_stats["items"][i]["snippet"]["title"]
-            if description != "":
-                if detect(description) == "en":
-                    indexes.append(i)
-            elif title != "":
-                if detect(title) == "en":
-                    indexes.append(i)
+            try:
+                if description != "":
+                    if detect(description) == "en":
+                        indexes.append(i)
+                elif title != "":
+                    if detect(title) == "en":
+                        indexes.append(i)
+            except Exception:
+                indexes.append(i)
 
         video_ids = [video_ids[i] for i in indexes]
         videos_stats = [videos_stats["items"][i] for i in indexes]
 
         comments = []
-        for i, video_id in enumerate(video_ids[:1]):
+        for i, video_id in enumerate(video_ids):
             comments.append(
                 self._comments_list_from_video(
                     video_id, "", videos_stats[i]["snippet"]["channelId"]))
@@ -167,13 +170,13 @@ class YoutubeAPI:
                         topic=search_query,
                         description=videos_stats[i]["snippet"]["description"],
                         title=videos_stats[i]["snippet"]["title"],
-                        viewCount=int(
+                        view_count=int(
                             videos_stats[i]["statistics"]["viewCount"]),
-                        likeCount=int(
+                        like_count=int(
                             videos_stats[i]["statistics"]["likeCount"]),
-                        commentCount=int(
+                        comment_count=int(
                             videos_stats[i]["statistics"]["commentCount"]),
-                        favoriteCount=int(
+                        favorite_count=int(
                             videos_stats[i]["statistics"]["favoriteCount"]),
                         duration=videos_stats[i]["contentDetails"]["duration"],
                         comments=comments[i],

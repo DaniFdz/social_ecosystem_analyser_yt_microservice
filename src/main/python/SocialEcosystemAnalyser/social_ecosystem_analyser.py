@@ -32,26 +32,28 @@ def main():
 
     topics = GetTopics.get_topics()
 
-    for topic_name in topics:
+    for t in topics:
         next_page_token = ""
         while next_page_token is not None:
-            topic = ApiTopicsRepository.get_topic_by_name(topic_name)
+            topic = ApiTopicsRepository.get_topic_by_name(t.name)
+            print(f"Topic: {topic.name}")
             next_page_token, videos_data = youtube_api.get_videos_data(
                 topic.name, topic.next_page_token)
 
+            print(f"Next page token: {next_page_token}")
             if next_page_token is None:
-                ApiTopicsRepository.set_topic_as_finished(topic.name)
+                ApiTopicsRepository.set_topic_as_finished(topic)
                 ApiTopicsRepository.save_next_page_token(topic.name, "")
             else:
                 ApiTopicsRepository.save_next_page_token(
                     topic.name, next_page_token)
 
-            status = ApiVideosRepository.add_videos(*videos_data)
+            print(f"Adding {len(videos_data)} videos to the database...")
+            status = ApiVideosRepository.add_videos(videos_data)
             if status:
-                logging.info(
-                    f"Added {len(videos_data)} videos to the database")
+                print("Videos added to the database")
             else:
-                logging.error("Failed to add videos to the database")
+                print("Failed to add videos to the database")
             break
 
     sys.exit(0)

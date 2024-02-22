@@ -45,8 +45,4 @@ jobs:
         COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
         API_URL: http://localhost:3000
         API_TOKEN: token
-        MONGO_USERNAME: admin
-        MONGO_PASSWORD: admin
-        MONGO_HOST: 127.0.0.1
-        MONG_PORT: 27017
       run: just test

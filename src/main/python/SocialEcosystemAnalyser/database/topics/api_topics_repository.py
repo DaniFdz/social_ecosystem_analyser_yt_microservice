@@ -31,7 +31,7 @@ class ApiTopicsRepository(TopicsRepository):
 
         data = list([
             Topic(topic["name"], topic["finished"], topic["next_page_token"])
-            for topic in res.json()
+            for topic in res.json()["data"]
         ])
         return data
 
@@ -81,7 +81,7 @@ class ApiTopicsRepository(TopicsRepository):
     @classmethod
     def __update_topic(cls, topic: Topic) -> bool:
         """
-        Fetches PUT /api/v1/topics/
+        Fetches PUT /api/v1/topics/:topic_name
 
         @param: topic (Topic): Topic data
 
