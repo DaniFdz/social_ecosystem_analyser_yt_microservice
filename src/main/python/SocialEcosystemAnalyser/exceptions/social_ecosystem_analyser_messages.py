@@ -3,6 +3,7 @@ class MessageExceptions:
     YOUTUBE_API_ERROR = "Error in Youtube API"
     YOUTUBE_API_KEY_ERROR = "Invalid Youtube API key"
     YOUTUBE_API_QUOTA_EXCEEDED = "Youtube API quota exceeded"
+    YOUTUBE_API_INSUFFICIENT_PERMISSIONS = "Youtube API insufficient permissions"
     COHERE_API_ERROR = "Error in Cohere API"
     VIRUSTOTAL_API_ERROR = "Error in VirusTotal API"
     MONGO_CONNECTION_ERROR = "Error connecting to MongoDB"

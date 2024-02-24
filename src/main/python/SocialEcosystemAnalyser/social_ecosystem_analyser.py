@@ -43,7 +43,6 @@ def main():
             print(f"Next page token: {next_page_token}")
             if next_page_token is None:
                 ApiTopicsRepository.set_topic_as_finished(topic)
-                ApiTopicsRepository.save_next_page_token(topic.name, "")
             else:
                 ApiTopicsRepository.save_next_page_token(
                     topic.name, next_page_token)
@@ -53,8 +52,9 @@ def main():
             if status:
                 print("Videos added to the database")
             else:
-                print("Failed to add videos to the database")
-            break
+                print("Failed to add one or more videos to the database")
+
+        print(f"Finished topic, next_page_token: {next_page_token}")
 
     sys.exit(0)
 

@@ -1,3 +1,4 @@
+import json
 import os
 from typing import List
 
@@ -18,12 +19,17 @@ class ApiVideosRepository(VideosRepository):
         if len(videos) == 0:
             return False
 
-        headers = {"Authorization": f"Bearer {cls.__token}"}
+        headers = {
+            "Authorization": f"Bearer {cls.__token}",
+            "Content-Type": "application/json; charset=utf-8"
+        }
+
         for video in videos:
-            print(video.to_dict())
+            video_json = json.dumps(video.to_dict())
+
             response = r.post(
-                f"{cls.__api}/{cls.__endpoint}",
-                data=video.to_dict(),
+                url=cls.__api + cls.__endpoint,
+                data=video_json,
                 headers=headers,
             )
             if response.status_code != 201:

@@ -110,6 +110,7 @@ class ApiTopicsRepository(TopicsRepository):
         @return: bool: If the topic was updated
         """
         topic.finished = True
+        topic.next_page_token = ""
         return cls.__update_topic(topic)
 
     @classmethod

@@ -111,6 +111,9 @@ class YoutubeAPI:
                 raise SocialEcosystemAnalyserException(
                     f'{MessageExceptions.YOUTUBE_API_KEY_ERROR}: {res.json()["error"]["errors"][0]["message"]}'
                 )
+            elif "insufficient permissions" in res.json(
+            )["error"]["errors"][0]["message"]:
+                return []
             else:
                 raise SocialEcosystemAnalyserException(
                     f'{MessageExceptions.YOUTUBE_API_ERROR}: {res.json()["error"]["errors"][0]["message"]}'
