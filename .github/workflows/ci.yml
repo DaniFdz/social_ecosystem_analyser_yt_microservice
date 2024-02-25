@@ -44,4 +44,6 @@ jobs:
         VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
         API_URL: "http://localhost:3000"
         API_TOKEN: "token"
-      run: just test
+      run: |
+        poetry run python3 -c "import os; print(f'${os.environ.get(\"API_URL\")}')"
+        just coverage
