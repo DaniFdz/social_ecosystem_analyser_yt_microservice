@@ -38,12 +38,14 @@ jobs:
       run: just install
     - name: Linting
       run: just lint
+    - name: test_env
+      env:
+        API_URL: test
+      run: poetry run python3 -c "import os; print(f\"\${os.environ.get('API_URL')=}\")"
     - name: Testing and coverage report
       env:
         YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
         API_URL: "http://localhost:3000"
         API_TOKEN: "token"
-      run: |
-        poetry run python3 -c "import os; print(f'${os.environ.get(\"API_URL\")}')"
-        just coverage
+      run: just coverage
