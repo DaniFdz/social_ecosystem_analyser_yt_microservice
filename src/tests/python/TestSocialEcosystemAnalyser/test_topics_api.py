@@ -11,22 +11,24 @@ from src.main.python.SocialEcosystemAnalyser.database.topics.topics_repository i
 class TestApiTopicsRepository:
     def test_get_topics(self, mocker):
         """It should return a list of topics"""
-        values = [
-            {
-                "name": "topic1",
-                "finished": False,
-                "next_page_token": None
-            },
-            {
-                "name": "topic2",
-                "finished": False,
-                "next_page_token": None
-            },
-        ]
+        values = {
+            "data": [
+                {
+                    "name": "topic1",
+                    "finished": False,
+                    "next_page_token": None
+                },
+                {
+                    "name": "topic2",
+                    "finished": False,
+                    "next_page_token": None
+                },
+            ]
+        }
         topic_values = list(
             map(
                 lambda x: Topic(x["name"], x["finished"], x["next_page_token"]
-                                ), values))
+                                ), values["data"]))
         mocker.patch(
             "src.main.python.SocialEcosystemAnalyser.database.topics.api_topics_repository.r.get",
             return_value=type("Response", (object, ), {
@@ -34,7 +36,6 @@ class TestApiTopicsRepository:
                 "json": lambda: values
             }),
         )
-
         assert ApiTopicsRepository.get_topics() == topic_values
 
     def test_get_topics_error(self, mocker):

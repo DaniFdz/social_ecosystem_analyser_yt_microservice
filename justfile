@@ -7,7 +7,6 @@ setup:
 install: setup
 	poetry install --no-root
 	poetry run pre-commit install
-	poetry run pip install django-admin-honeypot-updated-2021
 
 # Update configuration files
 update:
