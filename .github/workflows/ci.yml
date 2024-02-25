@@ -39,11 +39,15 @@ jobs:
     - name: Linting
       run: just lint
     - name: Testing and coverage report
+      env:
+        YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+        COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
       run: |
         poetry run pip install "python-dotenv[cli]"
-        poetry run dotenv set YOUTUBE_API_KEY ${{ secrets.YOUTUBE_API_KEY }}
-        poetry run dotenv set VIRUSTOTAL_API_KEY ${{ secrets.VIRUSTOTAL_API_KEY }}
-        poetry run dotenv set COHERE_API_KEY ${{ secrets.COHERE_API_KEY }}
+        poetry run dotenv set YOUTUBE_API_KEY $YOUTUBE_API_KEY
+        poetry run dotenv set VIRUSTOTAL_API_KEY $VIRUSTOTAL_API_KEY
+        poetry run dotenv set COHERE_API_KEY $COHERE_API_KEY
         poetry run dotenv set API_URL http://localhost:3000
         poetry run dotenv set API_TOKEN token
         poetry run dotenv list
