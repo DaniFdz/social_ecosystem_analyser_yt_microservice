@@ -36,6 +36,16 @@ exit
 ssh root@<ip> -i ~/.ssh/droplet_tfg
 ```
 
+## Setup cronjob
+```bash
+crontab -e
+```
+
+Add this line at the end of the file
+```bash
+0 0 * * * /bin/bash -c "cd /root/social_ecosystem_analyser_yt_microservice && /root/.local/bin/poetry run python3 -m src.main.python.SocialEcosystemAnalyser.social_ecosystem_analyser"
+```
+
 ## Installation
 
 ### Install [🤖 Just](https://github.com/casey/just) and [🌐 Poetry](https://python-poetry.org/)
