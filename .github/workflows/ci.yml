@@ -40,10 +40,10 @@ jobs:
       run: just lint
     - name: Testing and coverage report
       run: |
-        touch .env
-        echo "YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}" >> .env
-        echo "VIRUSTOTAL_API_KEY=${{ secrets.VIRUSTOTAL_API_KEY }}" >> .env
-        echo "COHERE_API_KEY=${{ secrets.COHERE_API_KEY }}" >> .env
-        echo "API_URL=http://localhost:3000" >> .env
-        echo "API_TOKEN= token" >> .env
-        just test
+        poetry run pip install "python-dotenv[cli]"
+        poetry run dotenv set YOUTUBE_API_KEY ${{ secrets.YOUTUBE_API_KEY }}
+        poetry run dotenv set VIRUSTOTAL_API_KEY ${{ secrets.VIRUSTOTAL_API_KEY }}
+        poetry run dotenv set COHERE_API_KEY ${{ secrets.COHERE_API_KEY }}
+        poetry run dotenv set API_URL http://localhost:3000
+        poetry run dotenv set API_TOKEN token
+        poetry run dotenv run --  poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=term --cov-fail-under=75
