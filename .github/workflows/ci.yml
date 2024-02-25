@@ -46,4 +46,5 @@ jobs:
         poetry run dotenv set COHERE_API_KEY ${{ secrets.COHERE_API_KEY }}
         poetry run dotenv set API_URL http://localhost:3000
         poetry run dotenv set API_TOKEN token
-        poetry run dotenv run --  poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=term --cov-fail-under=75
+        poetry run dotenv list
+        poetry run dotenv run -- pytest -v -rs -n auto --show-capture=no --cov --cov-report=term --cov-fail-under=75
