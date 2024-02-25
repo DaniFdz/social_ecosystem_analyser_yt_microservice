@@ -40,4 +40,4 @@ jobs:
           END
       - name: Run deploy
         run: |
-          ssh target "cd social_ecosystem_analyser_yt_microservice/ && git pull && poetry install --no-root --no-dev"
+          ssh target "cd social_ecosystem_analyser_yt_microservice/ && git pull && /root/.local/bin/poetry install --no-root --no-dev"
