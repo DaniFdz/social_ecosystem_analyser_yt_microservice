@@ -39,10 +39,11 @@ jobs:
     - name: Linting
       run: just lint
     - name: Testing and coverage report
-      env:
-        YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-        VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
-        COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
-        API_URL: http://localhost:3000
-        API_TOKEN: token
-      run: just test
+      run: |
+        touch .env
+        echo "YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}" >> .env
+        echo "VIRUSTOTAL_API_KEY=${{ secrets.VIRUSTOTAL_API_KEY }}" >> .env
+        echo "COHERE_API_KEY= ${{ secrets.COHERE_API_KEY }}" >> .env
+        echo "API_URL= http://localhost:3000" >> .env
+        echo "API_TOKEN= token" >> .env
+        just test
