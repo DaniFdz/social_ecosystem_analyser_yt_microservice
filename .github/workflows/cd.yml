@@ -1,4 +1,4 @@
-name: Django CD
+name: Python CD
 
 on:
   push:
