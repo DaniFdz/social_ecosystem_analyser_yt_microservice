@@ -1,16 +1,13 @@
-import os
-
 import requests as r
-from dotenv import load_dotenv
+
+from src.main.python.SocialEcosystemAnalyser.database.api_repository.api_repository import \
+    ApiRepository
 
 from .health_repository import HealthRepository
 
 
-class ApiHealthRepository(HealthRepository):
-    load_dotenv()
-    __api = os.environ.get("API_URL")
+class ApiHealthRepository(HealthRepository, ApiRepository):
     __endpoint = "health/"
-    __token = os.environ.get("API_TOKEN")
 
     @classmethod
     def check_health(cls):
@@ -19,7 +16,7 @@ class ApiHealthRepository(HealthRepository):
 
         @return: bool: If the API is healthy
         """
-        endpoint = cls.__api + cls.__endpoint
+        endpoint = cls._api + cls.__endpoint
         try:
             res = r.get(endpoint)
         except r.exceptions.ConnectionError:
