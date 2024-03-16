@@ -1,6 +1,11 @@
 name: Python CI
 
-on: [pull_request, workflow_call]
+on:
+  pull_request:
+  workflow_call:
+  push:
+      branches:
+        - unstable
 
 jobs:
   build:
