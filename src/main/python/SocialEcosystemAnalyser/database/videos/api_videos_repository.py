@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import List, Optional
 
 import requests as r
 
@@ -13,14 +13,17 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
     __endpoint = "api/v1/videos/"
 
     @classmethod
-    def get_videos(cls) -> List[Video]:
+    def get_videos(cls, page_number: Optional[int] = None) -> List[Video]:
         headers = {
             "Authorization": f"Bearer {cls._token}",
             "Content-Type": "application/json; charset=utf-8",
         }
 
+        url = cls._api + cls.__endpoint
+        if page_number is not None:
+            url += f"?pageNum={page_number}"
         response = r.get(
-            url=cls._api + cls.__endpoint,
+            url=url,
             headers=headers,
         )
 
@@ -45,7 +48,7 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
                         like_count=comment["like_count"],
                     ) for comment in video["comments"]
                 ],
-            ) for video in videos
+            ) for video in videos["data"]
         ]
 
     @classmethod

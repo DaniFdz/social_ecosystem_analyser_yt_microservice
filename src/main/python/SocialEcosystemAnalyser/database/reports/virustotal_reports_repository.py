@@ -15,6 +15,7 @@ class VTReport:
     trackers: Dict[str, List[Dict[str, str]]]
     threat_names: List[str]
     url: str
+    domain: str
     categories: Dict[str, str]
     last_analysis_stats: Dict[str, int]
     reputation: int
@@ -34,6 +35,7 @@ class VTReport:
             "trackers": self.trackers,
             "threat_names": self.threat_names,
             "url": self.url,
+            "domain": self.domain,
             "categories": self.categories,
             "last_analysis_stats": self.last_analysis_stats,
             "reputation": self.reputation,
@@ -42,7 +44,11 @@ class VTReport:
         }
 
 
-class ReportsRepository(ABC):
+class VirustotalReportsRepository(ABC):
     @abstractmethod
-    def add_reports(self, reports: List[VTReport]) -> bool:
+    def get_virustotal_report_by_url(cls, url: str) -> bool:
+        pass
+
+    @abstractmethod
+    def add_virustotal_reports(cls, reports: List[VTReport]) -> bool:
         pass

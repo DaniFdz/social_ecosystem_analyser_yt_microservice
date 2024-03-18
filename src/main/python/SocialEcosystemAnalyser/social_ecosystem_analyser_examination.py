@@ -6,8 +6,11 @@ from time import sleep
 from dotenv import load_dotenv
 
 from .database.health.api_health_repository import ApiHealthRepository
-# from .database.videos.api_videos_repository import ApiVideosRepository
+from .database.reports.api_virustotal_reports_repository import \
+    ApiVirusTotalReportsRepository
+from .database.videos.api_videos_repository import ApiVideosRepository
 from .settings import LOGGING
+from .utils.detect_url import DetectUrl
 from .virustTotal.check_url import VTApi
 
 if not load_dotenv():
@@ -27,7 +30,23 @@ def main():
         sleep(10)
 
     vt_api = VTApi(VIRUSTOTAL_API_KEY)
-    _ = vt_api.get_url_report("https://www.youtube.com/")
+
+    if not os.path.exists("$HOME/page_number.txt"):
+        page_number = 0
+    else:
+        with open("$HOME/page_number.txt", "r") as file:
+            page_number = int(file.read())
+
+    videos = ApiVideosRepository.get_videos(page_number)
+
+    for video in videos:
+        url_list = DetectUrl.detect_urls(video)
+
+        ApiVirusTotalReportsRepository.add_virustotal_reports([
+            vt_api.get_url_report(url) for url in url_list
+            if not ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
+                url)
+        ])
 
     sys.exit(0)
 

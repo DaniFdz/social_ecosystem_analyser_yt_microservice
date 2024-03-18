@@ -1,8 +1,9 @@
 import base64
+from urllib.parse import urlparse
 
 import requests
 
-from src.main.python.SocialEcosystemAnalyser.database.reports.reports_repository import \
+from src.main.python.SocialEcosystemAnalyser.database.reports.virustotal_reports_repository import \
     VTReport
 from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyser_exception import \
     SocialEcosystemAnalyserException
@@ -21,9 +22,11 @@ class VTApi:
 
     def get_url_report(self, url):
         headers = {"accept": "application/json", "x-apikey": self.api_key}
-        req_url = self.base + "urls/" + base64.b64encode(bytes(
-            url, "utf-8")).decode()
-        print(req_url)
+        req_url = (
+            self.base + "urls/"  # noqa:
+            +
+            base64.urlsafe_b64encode(url.encode()).decode().strip("=")  # noqa:
+        )
         response = requests.get(req_url, headers=headers)
 
         if response.status_code != 200:
@@ -31,6 +34,9 @@ class VTApi:
                 MessageExceptions.VIRUSTOTAL_API_ERROR)
 
         data = response.json()["data"]["attributes"]
+
+        domain = urlparse(url).netloc
+
         return VTReport(
             data["first_submission_date"],
             data["last_modification_date"],
@@ -42,6 +48,7 @@ class VTApi:
             data["trackers"],
             data["threat_names"],
             data["url"],
+            domain,
             data["categories"],
             data["last_analysis_stats"],
             data["reputation"],

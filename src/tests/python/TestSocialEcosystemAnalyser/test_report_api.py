@@ -1,14 +1,32 @@
 import pytest
 
-from src.main.python.SocialEcosystemAnalyser.database.reports.api_reports_repository import \
-    ApiReportsRepository
-from src.main.python.SocialEcosystemAnalyser.database.reports.reports_repository import \
+from src.main.python.SocialEcosystemAnalyser.database.reports.api_virustotal_reports_repository import \
+    ApiVirusTotalReportsRepository
+from src.main.python.SocialEcosystemAnalyser.database.reports.virustotal_reports_repository import \
     VTReport
 
 
 @pytest.mark.api
 @pytest.mark.unittest
 class TestReport:
+    def test_get_report_by_url(self, mocker):
+        """It should return True if the report exists"""
+        mocker.patch(
+            "src.main.python.SocialEcosystemAnalyser.database.reports.api_virustotal_reports_repository.r.get",
+            return_value=type("Response", (object, ), {"status_code": 200}),
+        )
+        assert ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
+            "Test")
+
+    def test_get_report_by_url_no_report(self, mocker):
+        """It should return False if the report does not exist"""
+        mocker.patch(
+            "src.main.python.SocialEcosystemAnalyser.database.reports.api_virustotal_reports_repository.r.get",
+            return_value=type("Response", (object, ), {"status_code": 404}),
+        )
+        assert not ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
+            "Test")
+
     def test_add_reports(self, mocker):
         """It should return True if the videos are added"""
         reports = [
@@ -23,6 +41,7 @@ class TestReport:
                 trackers="Test",
                 threat_names="Test",
                 url="Test",
+                domain="domain.com",
                 categories="Test",
                 last_analysis_stats="Test",
                 reputation="Test",
@@ -31,11 +50,11 @@ class TestReport:
             )
         ]
         mocker.patch(
-            "src.main.python.SocialEcosystemAnalyser.database.reports.api_reports_repository.r.post",
+            "src.main.python.SocialEcosystemAnalyser.database.reports.api_virustotal_reports_repository.r.post",
             return_value=type("Response", (object, ), {"status_code": 201}),
         )
-        assert ApiReportsRepository.add_reports(reports)
+        assert ApiVirusTotalReportsRepository.add_virustotal_reports(reports)
 
-    def test_add_videos_no_videos(self, mocker):
+    def test_add_videos_no_videos(self):
         """It should return False if no videos are added"""
-        assert not ApiReportsRepository.add_reports([])
+        assert not ApiVirusTotalReportsRepository.add_virustotal_reports([])
