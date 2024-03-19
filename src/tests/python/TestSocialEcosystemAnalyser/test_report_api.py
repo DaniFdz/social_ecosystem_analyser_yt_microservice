@@ -52,3 +52,7 @@ class TestReport:
             return_value=type("Response", (object, ), {"status_code": 201}),
         )
         assert ApiVirusTotalReportsRepository.add_virustotal_report(report)
+
+    def test_add_videos_no_videos(self):
+        """It should return False if no videos are added"""
+        assert not ApiVirusTotalReportsRepository.add_virustotal_report(None)
