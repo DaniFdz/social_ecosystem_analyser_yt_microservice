@@ -34,7 +34,8 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
         return [
             Video(
                 topic=video["topic"],
-                description=video["description"],
+                description=video["description"]
+                if "description" in video else "None",
                 title=video["title"],
                 view_count=video["view_count"],
                 like_count=video["like_count"],
@@ -47,7 +48,7 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
                         text=comment["text"],
                         like_count=comment["like_count"],
                     ) for comment in video["comments"]
-                ],
+                ] if "comments" in video else [],
             ) for video in videos["data"]
         ]
 

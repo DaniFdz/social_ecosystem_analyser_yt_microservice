@@ -27,34 +27,28 @@ class TestReport:
         assert not ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
             "Test")
 
-    def test_add_reports(self, mocker):
+    def test_add_report(self, mocker):
         """It should return True if the videos are added"""
-        reports = [
-            VTReport(
-                first_submission_date="Test",
-                last_modification_date="Test",
-                last_http_response_content_length="Test",
-                tags="Test",
-                html_meta="Test",
-                times_submitted="Test",
-                redirection_chain="Test",
-                trackers="Test",
-                threat_names="Test",
-                url="Test",
-                domain="domain.com",
-                categories="Test",
-                last_analysis_stats="Test",
-                reputation="Test",
-                last_http_response_code="Test",
-                last_http_response_headers="Test",
-            )
-        ]
+        report = VTReport(
+            first_submission_date="Test",
+            last_modification_date="Test",
+            last_http_response_content_length="Test",
+            tags="Test",
+            html_meta="Test",
+            times_submitted="Test",
+            redirection_chain="Test",
+            trackers="Test",
+            threat_names="Test",
+            url="Test",
+            domain="domain.com",
+            categories="Test",
+            last_analysis_stats="Test",
+            reputation="Test",
+            last_http_response_code="Test",
+            last_http_response_headers="Test",
+        )
         mocker.patch(
             "src.main.python.SocialEcosystemAnalyser.database.reports.api_virustotal_reports_repository.r.post",
             return_value=type("Response", (object, ), {"status_code": 201}),
         )
-        assert ApiVirusTotalReportsRepository.add_virustotal_reports(reports)
-
-    def test_add_videos_no_videos(self):
-        """It should return False if no videos are added"""
-        assert not ApiVirusTotalReportsRepository.add_virustotal_reports([])
+        assert ApiVirusTotalReportsRepository.add_virustotal_report(report)

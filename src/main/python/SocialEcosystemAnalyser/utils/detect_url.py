@@ -21,7 +21,7 @@ class DetectUrl:
         """
         urls = cls.detect_url_in_string(video.description)
         for comment in video.comments:
-            urls = urls.union(cls.detect_url_in_string(comment.text))
+            urls = urls.union(cls.detect_url_in_string(str(comment.text)))
         return urls
 
     @staticmethod

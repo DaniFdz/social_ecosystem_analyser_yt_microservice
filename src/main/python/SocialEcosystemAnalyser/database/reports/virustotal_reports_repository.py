@@ -50,5 +50,5 @@ class VirustotalReportsRepository(ABC):
         pass
 
     @abstractmethod
-    def add_virustotal_reports(cls, reports: List[VTReport]) -> bool:
+    def add_virustotal_report(cls, reports: List[VTReport]) -> bool:
         pass

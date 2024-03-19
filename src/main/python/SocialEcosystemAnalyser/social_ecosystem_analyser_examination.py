@@ -41,12 +41,12 @@ def main():
 
     for video in videos:
         url_list = DetectUrl.detect_urls(video)
-
-        ApiVirusTotalReportsRepository.add_virustotal_reports([
-            vt_api.get_url_report(url) for url in url_list
+        for url in url_list:
+            url_id = vt_api.get_url_id(url)["data"]["id"].split("-")[1]
             if not ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
-                url)
-        ])
+                    url):
+                ApiVirusTotalReportsRepository.add_virustotal_report(
+                    vt_api.get_url_report(url_id))
 
     sys.exit(0)
 
