@@ -53,6 +53,25 @@ class TestComment:
 @pytest.mark.api
 @pytest.mark.integration
 class TestApiVideosRepository:
+    def get_videos(self, mocker):
+        """It should return a list of videos"""
+        mocker.patch(
+            "src.main.python.SocialEcosystemAnalyser.database.videos.api_videos_repository.r.get",
+            return_value=type("Response", (object, ), {
+                "status_code": 200,
+                "json": lambda: []
+            }),
+        )
+        assert ApiVideosRepository.get_videos()
+
+    def test_get_videos_error(self, mocker):
+        """It should return an empty list if the API returns an error"""
+        mocker.patch(
+            "src.main.python.SocialEcosystemAnalyser.database.videos.api_videos_repository.r.get",
+            return_value=type("Response", (object, ), {"status_code": 500}),
+        )
+        assert ApiVideosRepository.get_videos() == []
+
     def test_add_videos(self, mocker):
         """It should return True if the videos are added"""
         videos = [

@@ -1,18 +1,56 @@
 import json
-import os
-from typing import List
+from typing import List, Optional
 
 import requests as r
-from dotenv import load_dotenv
 
-from .videos_repository import Video, VideosRepository
+from src.main.python.SocialEcosystemAnalyser.database.api_repository.api_repository import \
+    ApiRepository
+
+from .videos_repository import Comment, Video, VideosRepository
 
 
-class ApiVideosRepository(VideosRepository):
-    load_dotenv()
-    __api = os.environ.get("API_URL")
+class ApiVideosRepository(VideosRepository, ApiRepository):
     __endpoint = "api/v1/videos/"
-    __token = os.environ.get("API_TOKEN")
+
+    @classmethod
+    def get_videos(cls, page_number: Optional[int] = None) -> List[Video]:
+        headers = {
+            "Authorization": f"Bearer {cls._token}",
+            "Content-Type": "application/json; charset=utf-8",
+        }
+
+        url = cls._api + cls.__endpoint
+        if page_number is not None:
+            url += f"?pageNum={page_number}"
+        response = r.get(
+            url=url,
+            headers=headers,
+        )
+
+        if response.status_code != 200:
+            return []
+
+        videos = response.json()
+        return [
+            Video(
+                topic=video["topic"],
+                description=video["description"]
+                if "description" in video else "None",
+                title=video["title"],
+                view_count=video["view_count"],
+                like_count=video["like_count"],
+                comment_count=video["comment_count"],
+                favorite_count=video["favorite_count"],
+                duration=video["duration"],
+                comments=[
+                    Comment(
+                        is_author=comment["is_author"],
+                        text=comment["text"],
+                        like_count=comment["like_count"],
+                    ) for comment in video["comments"]
+                ] if "comments" in video else [],
+            ) for video in videos["data"]
+        ]
 
     @classmethod
     def add_videos(cls, videos: List[Video]) -> bool:
@@ -20,15 +58,15 @@ class ApiVideosRepository(VideosRepository):
             return False
 
         headers = {
-            "Authorization": f"Bearer {cls.__token}",
-            "Content-Type": "application/json; charset=utf-8"
+            "Authorization": f"Bearer {cls._token}",
+            "Content-Type": "application/json; charset=utf-8",
         }
 
         for video in videos:
             video_json = json.dumps(video.to_dict())
 
             response = r.post(
-                url=cls.__api + cls.__endpoint,
+                url=cls._api + cls.__endpoint,
                 data=video_json,
                 headers=headers,
             )

@@ -1,17 +1,15 @@
-import os
 from typing import List
 
 import requests as r
-from dotenv import load_dotenv
+
+from src.main.python.SocialEcosystemAnalyser.database.api_repository.api_repository import \
+    ApiRepository
 
 from .topics_repository import Topic, TopicsRepository
 
 
-class ApiTopicsRepository(TopicsRepository):
-    load_dotenv()
-    __api = os.environ.get("API_URL", "http://localhost:3000/")
+class ApiTopicsRepository(TopicsRepository, ApiRepository):
     __endpoint = "api/v1/topics/"
-    __token = os.environ.get("API_TOKEN", "")
 
     @classmethod
     def get_topics(cls) -> List[Topic]:
@@ -20,10 +18,10 @@ class ApiTopicsRepository(TopicsRepository):
 
         @return: List[Topic]: List of topics
         """
-        endpoint = cls.__api + cls.__endpoint
+        endpoint = cls._api + cls.__endpoint
         res = r.get(
             endpoint,
-            headers={"Authorization": f"Bearer {cls.__token}"},
+            headers={"Authorization": f"Bearer {cls._token}"},
         )
 
         if res.status_code != 200:
@@ -44,10 +42,10 @@ class ApiTopicsRepository(TopicsRepository):
 
         @return: Topic: Topic data
         """
-        endpoint = cls.__api + cls.__endpoint + topic_name
+        endpoint = cls._api + cls.__endpoint + topic_name
         res = r.get(
             endpoint,
-            headers={"Authorization": f"Bearer {cls.__token}"},
+            headers={"Authorization": f"Bearer {cls._token}"},
         )
 
         if res.status_code != 200:
@@ -65,10 +63,10 @@ class ApiTopicsRepository(TopicsRepository):
 
         @return: bool: If the topic was created
         """
-        endpoint = cls.__api + cls.__endpoint
+        endpoint = cls._api + cls.__endpoint
         res = r.post(
             endpoint,
-            headers={"Authorization": f"Bearer {cls.__token}"},
+            headers={"Authorization": f"Bearer {cls._token}"},
             json={
                 "name": topic_name,
                 "finished": False,
@@ -87,14 +85,14 @@ class ApiTopicsRepository(TopicsRepository):
 
         @return: bool: If the topic was updated
         """
-        endpoint = cls.__api + cls.__endpoint + topic.name
+        endpoint = cls._api + cls.__endpoint + topic.name
         res = r.put(
             endpoint,
-            headers={"Authorization": f"Bearer {cls.__token}"},
+            headers={"Authorization": f"Bearer {cls._token}"},
             json={
                 "name": topic.name,
                 "finished": topic.finished,
-                "next_page_token": topic.next_page_token
+                "next_page_token": topic.next_page_token,
             },
         )
 

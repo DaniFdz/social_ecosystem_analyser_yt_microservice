@@ -36,3 +36,5 @@ coverage:
 # Check the coverage of the tests and export to html
 coverage_html:
 	poetry run pytest -v -rs -n auto --show-capture=no --cov --cov-report=html:htmlcov --cov-report=term --cov-fail-under=75
+
+ci: lint coverage

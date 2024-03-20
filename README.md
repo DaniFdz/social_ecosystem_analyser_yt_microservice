@@ -43,7 +43,7 @@ crontab -e
 
 Add this line at the end of the file
 ```bash
-0 0 * * * /bin/bash -c "cd /root/social_ecosystem_analyser_yt_microservice && /root/.local/bin/poetry run python3 -m src.main.python.SocialEcosystemAnalyser.social_ecosystem_analyser"
+0 0 * * * /bin/bash -c "cd /root/social_ecosystem_analyser_yt_microservice && bash ./scripts/entrypoint.sh"
 ```
 
 ## Installation
