@@ -31,24 +31,34 @@ def main():
 
     vt_api = VTApi(VIRUSTOTAL_API_KEY)
 
-    if not os.path.exists("$HOME/page_number.txt"):
+    if not os.path.exists("$HOME/.logs"):
+        os.makedirs("$HOME/.logs")
+
+    if not os.path.exists("$HOME/.logs/page_number.txt"):
         page_number = 0
     else:
-        with open("$HOME/page_number.txt", "r") as file:
+        with open("$HOME/.logs/page_number.txt", "r") as file:
             page_number = int(file.read())
 
-    videos = ApiVideosRepository.get_videos(page_number)
+    while 1:
+        logging.info(f"Report from page: {page_number}")
 
-    for video in videos:
-        url_list = DetectUrl.detect_urls(video)
-        for url in url_list:
-            url_id = vt_api.get_url_id(url)["data"]["id"].split("-")[1]
-            if not ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
-                    url):
-                ApiVirusTotalReportsRepository.add_virustotal_report(
-                    vt_api.get_url_report(url_id))
+        videos = ApiVideosRepository.get_videos(page_number)
 
-    sys.exit(0)
+        for video in videos:
+            url_list = DetectUrl.detect_urls(video)
+            for url in url_list:
+                url_id = vt_api.get_url_id(url)["data"]["id"].split("-")[1]
+                if not ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
+                        url):
+                    report = vt_api.get_url_report(url_id)
+                    ApiVirusTotalReportsRepository.add_virustotal_report(
+                        report)
+                    logging.info(f"Report added to the database: {url}")
+
+        page_number += 1
+        with open("$HOME/.logs/page_number.txt", "w") as file:
+            file.write(str(page_number))
 
 
 if __name__ == "__main__":
