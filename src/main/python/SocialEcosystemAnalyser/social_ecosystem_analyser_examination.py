@@ -31,13 +31,15 @@ def main():
 
     vt_api = VTApi(VIRUSTOTAL_API_KEY)
 
-    if not os.path.exists("$HOME/.logs"):
-        os.makedirs("$HOME/.logs")
+    LOGS_FOLDER = os.path.expanduser("~/.logs")
 
-    if not os.path.exists("$HOME/.logs/page_number.txt"):
+    if not os.path.exists(f"{LOGS_FOLDER}"):
+        os.makedirs(f"{LOGS_FOLDER}")
+
+    if not os.path.exists(f"{LOGS_FOLDER}/page_number.txt"):
         page_number = 0
     else:
-        with open("$HOME/.logs/page_number.txt", "r") as file:
+        with open(f"{LOGS_FOLDER}/page_number.txt", "r") as file:
             page_number = int(file.read())
 
     while 1:
@@ -57,7 +59,7 @@ def main():
                     logging.info(f"Report added to the database: {url}")
 
         page_number += 1
-        with open("$HOME/.logs/page_number.txt", "w") as file:
+        with open(f"{LOGS_FOLDER}/page_number.txt", "w") as file:
             file.write(str(page_number))
 
 
