@@ -2,18 +2,17 @@ import requests as r
 
 from src.main.python.SocialEcosystemAnalyser.database.api_repository.api_repository import \
     ApiRepository
-from src.main.python.SocialEcosystemAnalyser.database.reports.virustotal_reports_repository import (
-    VirustotalReportsRepository, VTReport)
+from src.main.python.SocialEcosystemAnalyser.database.reports.general.general_reports_repository import (
+    GeneralReport, GeneralReportsRepository)
 
 
-class ApiVirusTotalReportsRepository(VirustotalReportsRepository,
-                                     ApiRepository):
-    __endpoint = "api/v1/virustotal/"
+class ApiGeneralReportsRepository(GeneralReportsRepository, ApiRepository):
+    __endpoint = "api/v1/report/"
 
     @classmethod
-    def get_virustotal_report_by_url(cls, url: str) -> bool:
+    def get_general_report_by_url(cls, url: str) -> bool:
         """
-        Fetches Get /api/v1/virustotal/:url
+        Fetches Get /api/v1/general/:url
 
         @return: bool: If report exists
         """
@@ -24,9 +23,9 @@ class ApiVirusTotalReportsRepository(VirustotalReportsRepository,
         return res.status_code == 200
 
     @classmethod
-    def add_virustotal_report(cls, report: VTReport) -> bool:
+    def add_general_report(cls, report: GeneralReport) -> bool:
         """
-        Fetches Post /api/v1/virustotal/
+        Fetches Post /api/v1/general/
 
         @return: bool: If report was created
         """
