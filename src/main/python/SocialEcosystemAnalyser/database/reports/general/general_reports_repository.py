@@ -14,7 +14,7 @@ class URLReport:
     def to_dict(self):
         return {
             "redirection_chain": self.redirection_chain,
-            "categories": self.categories,
+            "categories": self.categories if self.categories else {},
             "last_analysis_stats": self.last_analysis_stats,
             "reputation": self.reputation,
             "result": self.result
@@ -27,8 +27,8 @@ class GeneralReport:
     topic: str
     title: str
     description: str
-    view_count: str
-    like_count: str
+    view_count: int
+    like_count: int
     urls_reports: List[URLReport]
 
     def __dict__(self) -> Dict:
