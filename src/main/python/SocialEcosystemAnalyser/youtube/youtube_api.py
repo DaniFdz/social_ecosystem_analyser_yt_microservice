@@ -58,7 +58,7 @@ class YoutubeAPI:
             "id":
             ",".join(video_ids),
             "fields":
-            "items(statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId))",
+            "items(statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId,publishedAt))",
         }
         res = req.get(url, params=params)
 
@@ -173,6 +173,7 @@ class YoutubeAPI:
                         topic=search_query,
                         description=videos_stats[i]["snippet"]["description"],
                         title=videos_stats[i]["snippet"]["title"],
+                        published_at=videos_stats[i]["snippet"]["publishedAt"],
                         view_count=int(
                             videos_stats[i]["statistics"]["viewCount"]),
                         like_count=int(

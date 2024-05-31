@@ -21,6 +21,7 @@ class Comment:
 class Video:
     topic: str
     description: str
+    published_at: str
     title: str
     view_count: int
     like_count: int
@@ -34,6 +35,7 @@ class Video:
             "topic": self.topic,
             "description": self.description,
             "title": self.title,
+            "published_at": self.published_at,
             "view_count": self.view_count,
             "like_count": self.like_count,
             "comment_count": self.comment_count,

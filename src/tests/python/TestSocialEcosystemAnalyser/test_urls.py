@@ -44,6 +44,7 @@ class TestUrls:
             description=
             "<a href='https://www.google.com'>https://www.google.com</a>",
             title="title",
+            published_at="2021-01-01",
             view_count=1,
             like_count=1,
             comment_count=1,

@@ -60,6 +60,7 @@ def main():
                                    description=video_info["description"],
                                    view_count=video_info["view_count"],
                                    like_count=video_info["like_count"],
+                                   published_at=video_info["published_at"],
                                    url_reports=[])
 
             url_list = DetectUrl.detect_urls(video)

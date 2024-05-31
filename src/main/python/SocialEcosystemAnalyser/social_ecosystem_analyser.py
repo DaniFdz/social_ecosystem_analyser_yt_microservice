@@ -45,7 +45,7 @@ def main():
                 ApiTopicsRepository.set_topic_as_finished(topic)
             else:
                 ApiTopicsRepository.save_next_page_token(
-                    topic.name, next_page_token)
+                    topic.name, next_page_token, topic.type)
 
             logging.info(
                 f"Adding {len(videos_data)} videos to the database...")

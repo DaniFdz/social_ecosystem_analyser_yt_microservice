@@ -34,6 +34,7 @@ class TestReport:
                                description="Test",
                                view_count="Test",
                                like_count="Test",
+                               published_at="Test",
                                urls_reports=[])
         mocker.patch(
             "src.main.python.SocialEcosystemAnalyser.database.reports.general.api_general_reports_repository.r.post",

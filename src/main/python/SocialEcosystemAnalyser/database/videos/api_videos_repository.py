@@ -37,6 +37,7 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
                 description=video["description"]
                 if "description" in video else "None",
                 title=video["title"],
+                published_at=video["published_at"],
                 view_count=video["view_count"],
                 like_count=video["like_count"],
                 comment_count=video["comment_count"],

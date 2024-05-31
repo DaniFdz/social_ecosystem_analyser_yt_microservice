@@ -29,6 +29,7 @@ class GeneralReport:
     description: str
     view_count: int
     like_count: int
+    published_at: str
     urls_reports: List[URLReport]
 
     def __dict__(self) -> Dict:
@@ -41,6 +42,8 @@ class GeneralReport:
             self.title,
             "description":
             self.description,
+            "published_at":
+            self.published_at,
             "view_count":
             self.view_count,
             "like_count":

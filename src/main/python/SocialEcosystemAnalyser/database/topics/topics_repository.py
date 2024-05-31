@@ -8,6 +8,7 @@ class Topic:
     name: str
     finished: bool
     next_page_token: str
+    type: str
 
 
 class TopicsRepository(ABC):
@@ -32,5 +33,6 @@ class TopicsRepository(ABC):
         pass
 
     @abstractmethod
-    def save_next_page_token(cls, topic_name: str, token: str) -> bool:
+    def save_next_page_token(cls, topic_name: str, token: str,
+                             type: str) -> bool:
         pass
