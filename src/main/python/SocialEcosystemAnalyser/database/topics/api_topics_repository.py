@@ -28,8 +28,9 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
             return []
 
         data = list([
-            Topic(topic["name"], topic["finished"], topic["next_page_token"],
-                  topic["type"]) for topic in res.json()["data"]
+            Topic(topic["name"], topic["finished"],
+                  topic.get("next_page_token"), topic["type"])
+            for topic in res.json()["data"]
         ])
         return data
 
@@ -48,12 +49,13 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
             headers={"Authorization": f"Bearer {cls._token}"},
         )
 
+        print(res.status_code)
         if res.status_code != 200:
             return None
 
         data = res.json()
-        return Topic(data["name"], data["finished"], data["next_page_token"],
-                     data["type"])
+        return Topic(data["name"], data["finished"],
+                     data.get("next_page_token"), data["type"])
 
     @classmethod
     def create_topic(cls, topic_name: str) -> bool:

@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
 class Topic:
     name: str
     finished: bool
-    next_page_token: str
+    next_page_token: Optional[str]
     type: str
 
 
