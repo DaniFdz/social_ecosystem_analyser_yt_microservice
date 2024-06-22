@@ -50,45 +50,36 @@ def main():
 
         for video in ApiVideosRepository.get_videos(page_number):
             report = GeneralReport(
-                id=video["id"],
-                topic=video["topic"],
-                title=video["title"],
-                description=video["description"],
-                view_count=video["view_count"],
-                like_count=video["like_count"],
-                published_at=video["published_at"],
-                url_reports=[],
+                id=video.id,
+                topic=video.topic,
+                title=video.title,
+                description=video.description,
+                view_count=video.view_count,
+                like_count=video.like_count,
+                published_at=video.published_at,
+                urls_reports=[],
             )
 
-            url_list = DetectUrl.detect_urls(video)
-            for url in url_list:
+            for url in DetectUrl.detect_urls(video):
+                print(url)
                 url_id = vt_api.get_url_id(url)["data"]["id"].split("-")[1]
-                if not ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
-                        url):
+                virustotal_report = ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
+                    url)
+                if not virustotal_report:
+
                     virustotal_report = vt_api.get_url_report(url_id)
+                    if virustotal_report is None:
+                        continue
+
                     ApiVirusTotalReportsRepository.add_virustotal_report(
                         virustotal_report)
-                    logging.info(
-                        f"Virustotal report added to the database: {url}")
 
-                    # Genrate General Report
-                    report.url_reports.append({
-                        "redirection_chain":
-                        virustotal_report["data"]["attributes"]
-                        ["redirection_chain"],
-                        "categories":
-                        virustotal_report["data"]["attributes"]["categories"],
-                        "last_analysis_stats":
-                        virustotal_report["data"]["attributes"]
-                        ["last_analysis_stats"],
-                        "reputation":
-                        virustotal_report["data"]["attributes"]["reputation"],
-                        "result":
-                        virustotal_report["data"]["attributes"]["result"],
-                    })
+                report.urls_reports.append(virustotal_report)
 
-            ApiGeneralReportsRepository.add_general_report(report)
-            logging.info(f"General report added to the database: {video}")
+            print(report)
+            if not ApiGeneralReportsRepository.add_general_report(report):
+                logging.error("Report not added")
+            sleep(5)
 
         page_number += 1
         with open(f"{LOGS_FOLDER}/page_number.txt", "w") as file:

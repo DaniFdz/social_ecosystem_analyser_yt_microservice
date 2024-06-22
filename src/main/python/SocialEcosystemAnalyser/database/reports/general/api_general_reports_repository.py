@@ -7,7 +7,7 @@ from src.main.python.SocialEcosystemAnalyser.database.reports.general.general_re
 
 
 class ApiGeneralReportsRepository(GeneralReportsRepository, ApiRepository):
-    __endpoint = "api/v1/report/"
+    __endpoint = "api/v1/reports/"
 
     @classmethod
     def get_general_report_by_url(cls, url: str) -> bool:

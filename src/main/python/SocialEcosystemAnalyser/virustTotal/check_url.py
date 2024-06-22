@@ -37,7 +37,7 @@ class VTApi:
 
     def get_url_report(self, url):
         headers = {"accept": "application/json", "x-apikey": self.api_key}
-        req_url = self.base + "urls/" + url  # noqa:  # noqa:
+        req_url = self.base + "urls/" + url  # noqa
         response = requests.get(req_url, headers=headers)
         if response.status_code != 200:
             if "NotFoundError" in response.text:

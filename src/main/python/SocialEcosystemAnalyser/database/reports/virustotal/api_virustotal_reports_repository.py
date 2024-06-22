@@ -36,6 +36,6 @@ class ApiVirusTotalReportsRepository(VirustotalReportsRepository,
         res = r.post(
             endpoint,
             headers={"Authorization": f"Bearer {cls._token}"},
-            json=report.__dict__(),
+            json=report.to_dict(),
         )
         return res.status_code == 201
