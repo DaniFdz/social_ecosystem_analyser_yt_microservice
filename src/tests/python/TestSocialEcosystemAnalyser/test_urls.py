@@ -40,6 +40,7 @@ class TestUrls:
 
     def test_detect_urls_in_video(self):
         video = Video(
+            id="00000",
             topic="topic",
             description=
             "<a href='https://www.google.com'>https://www.google.com</a>",

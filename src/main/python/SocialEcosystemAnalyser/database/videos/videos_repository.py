@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -21,6 +21,7 @@ class Comment:
 
 @dataclass
 class Video:
+    id: str
     topic: str
     description: str
     published_at: str
@@ -34,6 +35,7 @@ class Video:
 
     def to_dict(self):
         return {
+            "id": self.id,
             "topic": self.topic,
             "description": self.description,
             "title": self.title,
@@ -48,6 +50,10 @@ class Video:
 
 
 class VideosRepository(ABC):
+    @abstractmethod
+    def get_videos(cls, page_number: Optional[int] = None) -> List[Video]:
+        pass
+
     @abstractmethod
     def add_videos(self, videos: List[Video]) -> bool:
         pass

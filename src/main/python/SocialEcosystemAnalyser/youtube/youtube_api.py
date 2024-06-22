@@ -58,7 +58,7 @@ class YoutubeAPI:
             "id":
             ",".join(video_ids),
             "fields":
-            "items(statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId,publishedAt))",
+            "items(id,statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId,publishedAt))",
         }
         res = req.get(url, params=params)
 
@@ -171,6 +171,7 @@ class YoutubeAPI:
             try:
                 videos_data.append(
                     Video(
+                        id=videos_stats[i]["id"],
                         topic=search_query,
                         description=videos_stats[i]["snippet"]["description"],
                         title=videos_stats[i]["snippet"]["title"],

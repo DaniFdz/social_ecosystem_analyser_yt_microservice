@@ -2,7 +2,7 @@ from urllib.parse import urlparse
 
 import requests
 
-from src.main.python.SocialEcosystemAnalyser.database.reports.virustotal_reports_repository import \
+from src.main.python.SocialEcosystemAnalyser.database.reports.virustotal.virustotal_reports_repository import \
     VTReport
 from src.main.python.SocialEcosystemAnalyser.exceptions.social_ecosystem_analyser_exception import \
     SocialEcosystemAnalyserException

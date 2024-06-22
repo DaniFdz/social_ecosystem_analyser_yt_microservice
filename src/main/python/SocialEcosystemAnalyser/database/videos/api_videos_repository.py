@@ -33,11 +33,11 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
         videos = response.json()
         return [
             Video(
+                id=video["id"],
                 topic=video["topic"],
                 description=video["description"]
                 if "description" in video else "None",
                 title=video["title"],
-                published_at=video["published_at"],
                 view_count=video["view_count"],
                 like_count=video["like_count"],
                 comment_count=video["comment_count"],
@@ -48,8 +48,10 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
                         is_author=comment["is_author"],
                         text=comment["text"],
                         like_count=comment["like_count"],
+                        published_at=comment["published_at"],
                     ) for comment in video["comments"]
                 ] if "comments" in video else [],
+                published_at=video["published_at"],
             ) for video in videos["data"]
         ]
 

@@ -28,14 +28,16 @@ class TestReport:
 
     def test_add_general_report(self, mocker):
         """It should return True if the videos are added"""
-        report = GeneralReport(link="Test",
-                               topic="Test",
-                               title="Test",
-                               description="Test",
-                               view_count="Test",
-                               like_count="Test",
-                               published_at="Test",
-                               urls_reports=[])
+        report = GeneralReport(
+            id="00000",
+            topic="Test",
+            title="Test",
+            description="Test",
+            view_count="Test",
+            like_count="Test",
+            published_at="Test",
+            urls_reports=[],
+        )
         mocker.patch(
             "src.main.python.SocialEcosystemAnalyser.database.reports.general.api_general_reports_repository.r.post",
             return_value=type("Response", (object, ), {"status_code": 201}),

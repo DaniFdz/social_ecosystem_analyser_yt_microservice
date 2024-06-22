@@ -23,7 +23,7 @@ class URLReport:
 
 @dataclass
 class GeneralReport:
-    link: str
+    id: str
     topic: str
     title: str
     description: str
@@ -34,8 +34,8 @@ class GeneralReport:
 
     def __dict__(self) -> Dict:
         return {
-            "link":
-            self.link,
+            "id":
+            self.id,
             "topic":
             self.topic,
             "title":

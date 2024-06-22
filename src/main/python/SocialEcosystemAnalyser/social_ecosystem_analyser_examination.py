@@ -5,12 +5,10 @@ from time import sleep
 
 from dotenv import load_dotenv
 
-from main.python.SocialEcosystemAnalyser.database.reports.general.general_reports_repository import \
-    GeneralReport
-
 from .database.health.api_health_repository import ApiHealthRepository
 from .database.reports.general.api_general_reports_repository import \
     ApiGeneralReportsRepository
+from .database.reports.general.general_reports_repository import GeneralReport
 from .database.reports.virustotal.api_virustotal_reports_repository import \
     ApiVirusTotalReportsRepository
 from .database.videos.api_videos_repository import ApiVideosRepository
@@ -50,18 +48,17 @@ def main():
     while 1:
         logging.info(f"Report from page: {page_number}")
 
-        videos = ApiVideosRepository.get_videos(page_number)
-
-        for video in videos:
-            video_info = ApiVideosRepository.get_video_by_url(video)
-            report = GeneralReport(link=video,
-                                   topic=video_info["topic"],
-                                   title=video_info["title"],
-                                   description=video_info["description"],
-                                   view_count=video_info["view_count"],
-                                   like_count=video_info["like_count"],
-                                   published_at=video_info["published_at"],
-                                   url_reports=[])
+        for video in ApiVideosRepository.get_videos(page_number):
+            report = GeneralReport(
+                id=video["id"],
+                topic=video["topic"],
+                title=video["title"],
+                description=video["description"],
+                view_count=video["view_count"],
+                like_count=video["like_count"],
+                published_at=video["published_at"],
+                url_reports=[],
+            )
 
             url_list = DetectUrl.detect_urls(video)
             for url in url_list:
@@ -74,7 +71,7 @@ def main():
                     logging.info(
                         f"Virustotal report added to the database: {url}")
 
-                    #Genrate General Report
+                    # Genrate General Report
                     report.url_reports.append({
                         "redirection_chain":
                         virustotal_report["data"]["attributes"]
@@ -87,7 +84,7 @@ def main():
                         "reputation":
                         virustotal_report["data"]["attributes"]["reputation"],
                         "result":
-                        virustotal_report["data"]["attributes"]["result"]
+                        virustotal_report["data"]["attributes"]["result"],
                     })
 
             ApiGeneralReportsRepository.add_general_report(report)
