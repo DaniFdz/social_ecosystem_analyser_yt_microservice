@@ -8,12 +8,14 @@ class Comment:
     is_author: bool
     text: str
     like_count: int
+    published_at: str
 
     def to_dict(self):
         return {
             "is_author": self.is_author,
             "text": self.text,
             "like_count": self.like_count,
+            "published_at": self.published_at,
         }
 
 

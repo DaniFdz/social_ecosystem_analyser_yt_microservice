@@ -44,7 +44,6 @@ class TestUrls:
             description=
             "<a href='https://www.google.com'>https://www.google.com</a>",
             title="title",
-            published_at="2021-01-01",
             view_count=1,
             like_count=1,
             comment_count=1,
@@ -56,12 +55,16 @@ class TestUrls:
                     text=
                     "<a href='https://www.youtube.com'>https://www.youtube.com</a>",
                     like_count=1,
+                    published_at="2024-06-13T05:00:23Z",
                 ),
-                Comment(is_author=False,
-                        text="This is a comment with no urls",
-                        like_count=1),
+                Comment(
+                    is_author=False,
+                    text="This is a comment with no urls",
+                    like_count=1,
+                    published_at="2024-06-13T05:00:23Z",
+                ),
             ],
-        )
+            published_at="2024-06-13T05:00:23Z")
         assert DetectUrl.detect_urls(video) == {
             "https://www.google.com",
             "https://www.youtube.com",

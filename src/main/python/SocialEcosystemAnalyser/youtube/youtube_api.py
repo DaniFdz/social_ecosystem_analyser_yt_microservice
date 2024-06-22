@@ -130,7 +130,8 @@ class YoutubeAPI:
                         ["textDisplay"],
                         like_count=x["snippet"]["topLevelComment"]["snippet"]
                         ["likeCount"],
-                    ))
+                        published_at=x["snippet"]["topLevelComment"]["snippet"]
+                        ["publishedAt"]))
 
         return data
 
