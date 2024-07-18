@@ -33,6 +33,7 @@ class TestReport:
             topic="Test",
             title="Test",
             description="Test",
+            avg_score=0,
             view_count="Test",
             like_count="Test",
             published_at="Test",

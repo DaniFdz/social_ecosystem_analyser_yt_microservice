@@ -37,6 +37,7 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
                 topic=video["topic"],
                 description=video["description"]
                 if "description" in video else "None",
+                score=video["score"],
                 title=video["title"],
                 view_count=video["view_count"],
                 like_count=video["like_count"],
@@ -47,6 +48,7 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
                     Comment(
                         is_author=comment["is_author"],
                         text=comment["text"],
+                        score=comment["score"],
                         like_count=comment["like_count"],
                         published_at=comment["published_at"],
                     ) for comment in video["comments"]

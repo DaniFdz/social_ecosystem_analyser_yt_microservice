@@ -15,6 +15,7 @@ class TestVideo:
             topic="Test",
             description="Test",
             title="Test",
+            score=0,
             view_count=0,
             like_count=0,
             comment_count=0,
@@ -28,6 +29,7 @@ class TestVideo:
             "topic": "Test",
             "description": "Test",
             "title": "Test",
+            "score": 0,
             "view_count": 0,
             "like_count": 0,
             "comment_count": 0,
@@ -45,12 +47,14 @@ class TestComment:
         comment = Comment(
             is_author=True,
             text="Test",
+            score=0,
             like_count=0,
             published_at="2021-01-01",
         )
         assert comment.to_dict() == {
             "is_author": True,
             "text": "Test",
+            "score": 0,
             "like_count": 0,
             "published_at": "2021-01-01",
         }
@@ -86,6 +90,7 @@ class TestApiVideosRepository:
                 topic="Test",
                 description="Test",
                 title="Test",
+                score=0,
                 view_count=0,
                 like_count=0,
                 comment_count=0,
@@ -113,6 +118,7 @@ class TestApiVideosRepository:
                 topic="Test",
                 description="Test",
                 title="Test",
+                score=0,
                 view_count=0,
                 like_count=0,
                 comment_count=0,

@@ -27,6 +27,7 @@ class GeneralReport:
     topic: str
     title: str
     description: str
+    avg_score: float
     view_count: int
     like_count: int
     published_at: str
@@ -42,6 +43,8 @@ class GeneralReport:
             self.title,
             "description":
             self.description,
+            "avg_score":
+            self.avg_score,
             "published_at":
             self.published_at,
             "view_count":

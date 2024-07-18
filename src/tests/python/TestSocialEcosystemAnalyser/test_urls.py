@@ -45,6 +45,7 @@ class TestUrls:
             description=
             "<a href='https://www.google.com'>https://www.google.com</a>",
             title="title",
+            score=0,
             view_count=1,
             like_count=1,
             comment_count=1,
@@ -55,12 +56,14 @@ class TestUrls:
                     is_author=True,
                     text=
                     "<a href='https://www.youtube.com'>https://www.youtube.com</a>",
+                    score=0,
                     like_count=1,
                     published_at="2024-06-13T05:00:23Z",
                 ),
                 Comment(
                     is_author=False,
                     text="This is a comment with no urls",
+                    score=0,
                     like_count=1,
                     published_at="2024-06-13T05:00:23Z",
                 ),

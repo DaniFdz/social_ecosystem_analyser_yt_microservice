@@ -6,6 +6,7 @@ setup:
 # Install dependencies
 install: setup
 	poetry install --no-root
+	poetry run pip install 'transformers[torch]'
 	poetry run pre-commit install
 
 # Update configuration files

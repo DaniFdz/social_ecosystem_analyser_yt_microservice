@@ -6,6 +6,8 @@ from langdetect import detect
 
 from src.main.python.SocialEcosystemAnalyser.database.videos.videos_repository import (
     Comment, Video)
+from src.main.python.SocialEcosystemAnalyser.nlp.text_analysis_score import \
+    get_text_analysis_score
 
 from ..exceptions.social_ecosystem_analyser_exception import \
     SocialEcosystemAnalyserException
@@ -128,6 +130,9 @@ class YoutubeAPI:
                         ["authorChannelId"]["value"] == authorChannelId,
                         text=x["snippet"]["topLevelComment"]["snippet"]
                         ["textDisplay"],
+                        score=get_text_analysis_score(
+                            x["snippet"]["topLevelComment"]["snippet"]
+                            ["textDisplay"]),
                         like_count=x["snippet"]["topLevelComment"]["snippet"]
                         ["likeCount"],
                         published_at=x["snippet"]["topLevelComment"]["snippet"]
@@ -175,6 +180,9 @@ class YoutubeAPI:
                         topic=search_query,
                         description=videos_stats[i]["snippet"]["description"],
                         title=videos_stats[i]["snippet"]["title"],
+                        score=get_text_analysis_score(
+                            f'{videos_stats[i]["snippet"]["title"]} - {videos_stats[i]["snippet"]["description"]}'
+                        ),
                         published_at=videos_stats[i]["snippet"]["publishedAt"],
                         view_count=int(
                             videos_stats[i]["statistics"]["viewCount"]),

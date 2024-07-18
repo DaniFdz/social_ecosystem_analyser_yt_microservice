@@ -54,6 +54,8 @@ def main():
                 topic=video.topic,
                 title=video.title,
                 description=video.description,
+                avg_score=0.6 * video.score +
+                0.4 * sum(x.score for x in video.comments),
                 view_count=video.view_count,
                 like_count=video.like_count,
                 published_at=video.published_at,
