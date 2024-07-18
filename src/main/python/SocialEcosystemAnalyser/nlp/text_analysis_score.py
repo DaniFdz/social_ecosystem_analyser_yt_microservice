@@ -8,8 +8,9 @@ def get_text_analysis_score(text: str) -> float:
     """
     if text == '':
         return 0
-
+    print(len(text))
     model = pipeline('sentiment-analysis',
                      model='cardiffnlp/twitter-roberta-base-sentiment-latest')
     result = model(text)
-    return result['score'] - 1
+    print(result)
+    return result[0]['score'] - 1
