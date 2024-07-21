@@ -10,5 +10,4 @@ class TestTextAnalysisScore:
         """It should return a score"""
         text = "The life is beautiful"
         output = get_text_analysis_score(text)
-        print(output)
-        assert len(output) == 3
+        assert output >= -1 and output <= 1
