@@ -113,8 +113,8 @@ class YoutubeAPI:
                 raise SocialEcosystemAnalyserException(
                     f'{MessageExceptions.YOUTUBE_API_KEY_ERROR}: {res.json()["error"]["errors"][0]["message"]}'
                 )
-            elif "insufficient permissions" in res.json(
-            )["error"]["errors"][0]["message"]:
+            elif ("insufficient permissions"
+                  in res.json()["error"]["errors"][0]["message"]):
                 return []
             else:
                 raise SocialEcosystemAnalyserException(
@@ -124,19 +124,23 @@ class YoutubeAPI:
         data = []
         for x in res.json()["items"]:
             if "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"]:
-                data.append(
-                    Comment(
-                        is_author=x["snippet"]["topLevelComment"]["snippet"]
-                        ["authorChannelId"]["value"] == authorChannelId,
-                        text=x["snippet"]["topLevelComment"]["snippet"]
-                        ["textDisplay"],
-                        score=get_text_analysis_score(
-                            x["snippet"]["topLevelComment"]["snippet"]
-                            ["textDisplay"]),
-                        like_count=x["snippet"]["topLevelComment"]["snippet"]
-                        ["likeCount"],
-                        published_at=x["snippet"]["topLevelComment"]["snippet"]
-                        ["publishedAt"]))
+                if (detect(x["snippet"]["topLevelComment"]["snippet"]
+                           ["textDisplay"]) == "en"):
+                    data.append(
+                        Comment(
+                            is_author=x["snippet"]["topLevelComment"]
+                            ["snippet"]["authorChannelId"]["value"] ==
+                            authorChannelId,
+                            text=x["snippet"]["topLevelComment"]["snippet"]
+                            ["textDisplay"],
+                            score=get_text_analysis_score(
+                                x["snippet"]["topLevelComment"]["snippet"]
+                                ["textDisplay"]),
+                            like_count=x["snippet"]["topLevelComment"]
+                            ["snippet"]["likeCount"],
+                            published_at=x["snippet"]["topLevelComment"]
+                            ["snippet"]["publishedAt"],
+                        ))
 
         return data
 
