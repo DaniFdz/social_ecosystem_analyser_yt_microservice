@@ -27,7 +27,7 @@ class YoutubeAPI:
             "type": "video",
             "order": "title",
             "q": search_query,
-            "maxResults": 50,
+            "maxResults": 2,
             "language": "en",
             "fields": "nextPageToken,items(id(videoId))",
         }
@@ -123,9 +123,9 @@ class YoutubeAPI:
 
         data = []
         for x in res.json()["items"]:
-            if "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"]:
-                if (detect(x["snippet"]["topLevelComment"]["snippet"]
-                           ["textDisplay"]) == "en"):
+            try:
+                if "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"] and \
+                        detect(x["snippet"]["topLevelComment"]["snippet"]["textDisplay"]) == "en":
                     data.append(
                         Comment(
                             is_author=x["snippet"]["topLevelComment"]
@@ -142,6 +142,9 @@ class YoutubeAPI:
                             ["snippet"]["publishedAt"],
                         ))
 
+            except:
+                continue
+
         return data
 
     def get_videos_data(  # noqa: C901
@@ -157,14 +160,12 @@ class YoutubeAPI:
             description = videos_stats["items"][i]["snippet"]["description"]
             title = videos_stats["items"][i]["snippet"]["title"]
             try:
-                if description != "":
-                    if detect(description) == "en":
-                        indexes.append(i)
-                elif title != "":
-                    if detect(title) == "en":
-                        indexes.append(i)
-            except Exception:
-                indexes.append(i)
+                if detect(description) == "en":
+                    indexes.append(i)
+                if detect(title) == "en":
+                    indexes.append(i)
+            except:
+                continue
 
         video_ids = [video_ids[i] for i in indexes]
         videos_stats = [videos_stats["items"][i] for i in indexes]

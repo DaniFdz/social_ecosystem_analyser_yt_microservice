@@ -33,6 +33,7 @@ def main():
     topics = GetTopics.get_topics()
 
     for t in topics:
+
         next_page_token = ""
         while next_page_token is not None:
             topic = ApiTopicsRepository.get_topic_by_name(t.name)

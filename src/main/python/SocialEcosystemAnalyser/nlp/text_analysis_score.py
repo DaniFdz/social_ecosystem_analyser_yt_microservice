@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.special import softmax
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
-                          AutoTokenizer)
+                          AutoTokenizer, logging)
 
 
 # Preprocess text
@@ -17,6 +17,22 @@ def preprocess(text):
 MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
 
 
+def calculate_sentiment_score(classification):
+    positive = classification.get('positive', 0)
+    neutral = classification.get('neutral', 0)
+    negative = classification.get('negative', 0)
+
+    total = positive + neutral + negative
+
+    if total == 0:
+        return 0
+
+    weighted_sum = positive - negative
+    score = weighted_sum / total
+
+    return float(score)
+
+
 def get_text_analysis_score(text: str) -> float:
     """
     Given a text, returns its score being:
@@ -28,14 +44,18 @@ def get_text_analysis_score(text: str) -> float:
     # model = pipeline('sentiment-analysis',
     #                  model='cardiffnlp/twitter-roberta-base-sentiment-latest')
     # result = model(text)
-    # return result['score'] - 1
+
+    logging.set_verbosity_error()
+
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     config = AutoConfig.from_pretrained(MODEL)
     # PT
     model = AutoModelForSequenceClassification.from_pretrained(MODEL)
-    model.save_pretrained(MODEL)
     text = preprocess(text)
-    encoded_input = tokenizer(text, return_tensors="pt")
+    encoded_input = tokenizer(text,
+                              return_tensors="pt",
+                              max_length=512,
+                              truncation=True)
     output = model(**encoded_input)
     scores = output[0][0].detach().numpy()
     scores = softmax(scores)
@@ -43,4 +63,9 @@ def get_text_analysis_score(text: str) -> float:
     # Print labels and scores
     ranking = np.argsort(scores)
     ranking = ranking[::-1]
-    return ranking
+
+    classification = {
+        model.config.id2label[ranking[i]]: scores[ranking[i]]
+        for i in range(len(scores))
+    }
+    return calculate_sentiment_score(classification)
