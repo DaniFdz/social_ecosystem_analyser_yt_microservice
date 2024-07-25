@@ -33,5 +33,5 @@ class DetectUrl:
         @return Set[str] -> List of urls inside the string
         """
         return set(
-            re.findall(">(?P<url>http[s]{0,1}://[\\da-zA-Z./\\-?&=_]+)",
+            re.findall("(?P<url>http[s]{0,1}://[\\da-zA-Z./\\-?&=_]+)",
                        string))

@@ -5,3 +5,4 @@ mongodb_data/
 mongodb_data_dev/
 secrets/
 .coverage
+.vscode/settings.json

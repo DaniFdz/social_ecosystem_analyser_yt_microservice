@@ -28,7 +28,8 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
             return []
 
         data = list([
-            Topic(topic["name"], topic["finished"], topic["next_page_token"])
+            Topic(topic["name"], topic["finished"],
+                  topic.get("next_page_token"), topic["type"])
             for topic in res.json()["data"]
         ])
         return data
@@ -48,11 +49,13 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
             headers={"Authorization": f"Bearer {cls._token}"},
         )
 
+        print(res.status_code)
         if res.status_code != 200:
             return None
 
         data = res.json()
-        return Topic(data["name"], data["finished"], data["next_page_token"])
+        return Topic(data["name"], data["finished"],
+                     data.get("next_page_token"), data["type"])
 
     @classmethod
     def create_topic(cls, topic_name: str) -> bool:
@@ -70,7 +73,8 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
             json={
                 "name": topic_name,
                 "finished": False,
-                "next_page_token": ""
+                "next_page_token": "",
+                "type": "topic"
             },
         )
 
@@ -93,6 +97,7 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
                 "name": topic.name,
                 "finished": topic.finished,
                 "next_page_token": topic.next_page_token,
+                "type": topic.type
             },
         )
 
@@ -112,7 +117,8 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
         return cls.__update_topic(topic)
 
     @classmethod
-    def save_next_page_token(cls, topic_name: str, token: str) -> bool:
+    def save_next_page_token(cls, topic_name: str, token: str,
+                             type: str) -> bool:
         """
         Fetches PUT /api/v1/topics/
 
@@ -120,5 +126,5 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
 
         @return: bool: If the topic was updated
         """
-        topic = Topic(topic_name, False, token)
+        topic = Topic(topic_name, False, token, type)
         return cls.__update_topic(topic)

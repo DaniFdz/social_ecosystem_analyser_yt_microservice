@@ -6,6 +6,8 @@ from langdetect import detect
 
 from src.main.python.SocialEcosystemAnalyser.database.videos.videos_repository import (
     Comment, Video)
+from src.main.python.SocialEcosystemAnalyser.nlp.text_analysis_score import \
+    get_text_analysis_score
 
 from ..exceptions.social_ecosystem_analyser_exception import \
     SocialEcosystemAnalyserException
@@ -25,7 +27,7 @@ class YoutubeAPI:
             "type": "video",
             "order": "title",
             "q": search_query,
-            "maxResults": 50,
+            "maxResults": 2,
             "language": "en",
             "fields": "nextPageToken,items(id(videoId))",
         }
@@ -58,7 +60,7 @@ class YoutubeAPI:
             "id":
             ",".join(video_ids),
             "fields":
-            "items(statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId))",
+            "items(id,statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId,publishedAt))",
         }
         res = req.get(url, params=params)
 
@@ -111,8 +113,8 @@ class YoutubeAPI:
                 raise SocialEcosystemAnalyserException(
                     f'{MessageExceptions.YOUTUBE_API_KEY_ERROR}: {res.json()["error"]["errors"][0]["message"]}'
                 )
-            elif "insufficient permissions" in res.json(
-            )["error"]["errors"][0]["message"]:
+            elif ("insufficient permissions"
+                  in res.json()["error"]["errors"][0]["message"]):
                 return []
             else:
                 raise SocialEcosystemAnalyserException(
@@ -121,16 +123,27 @@ class YoutubeAPI:
 
         data = []
         for x in res.json()["items"]:
-            if "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"]:
-                data.append(
-                    Comment(
-                        is_author=x["snippet"]["topLevelComment"]["snippet"]
-                        ["authorChannelId"]["value"] == authorChannelId,
-                        text=x["snippet"]["topLevelComment"]["snippet"]
-                        ["textDisplay"],
-                        like_count=x["snippet"]["topLevelComment"]["snippet"]
-                        ["likeCount"],
-                    ))
+            try:
+                if "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"] and \
+                        detect(x["snippet"]["topLevelComment"]["snippet"]["textDisplay"]) == "en":
+                    data.append(
+                        Comment(
+                            is_author=x["snippet"]["topLevelComment"]
+                            ["snippet"]["authorChannelId"]["value"] ==
+                            authorChannelId,
+                            text=x["snippet"]["topLevelComment"]["snippet"]
+                            ["textDisplay"],
+                            score=get_text_analysis_score(
+                                x["snippet"]["topLevelComment"]["snippet"]
+                                ["textDisplay"]),
+                            like_count=x["snippet"]["topLevelComment"]
+                            ["snippet"]["likeCount"],
+                            published_at=x["snippet"]["topLevelComment"]
+                            ["snippet"]["publishedAt"],
+                        ))
+
+            except:
+                continue
 
         return data
 
@@ -147,14 +160,12 @@ class YoutubeAPI:
             description = videos_stats["items"][i]["snippet"]["description"]
             title = videos_stats["items"][i]["snippet"]["title"]
             try:
-                if description != "":
-                    if detect(description) == "en":
-                        indexes.append(i)
-                elif title != "":
-                    if detect(title) == "en":
-                        indexes.append(i)
-            except Exception:
-                indexes.append(i)
+                if detect(description) == "en":
+                    indexes.append(i)
+                if detect(title) == "en":
+                    indexes.append(i)
+            except:
+                continue
 
         video_ids = [video_ids[i] for i in indexes]
         videos_stats = [videos_stats["items"][i] for i in indexes]
@@ -170,9 +181,14 @@ class YoutubeAPI:
             try:
                 videos_data.append(
                     Video(
+                        id=videos_stats[i]["id"],
                         topic=search_query,
                         description=videos_stats[i]["snippet"]["description"],
                         title=videos_stats[i]["snippet"]["title"],
+                        score=get_text_analysis_score(
+                            f'{videos_stats[i]["snippet"]["title"]} - {videos_stats[i]["snippet"]["description"]}'
+                        ),
+                        published_at=videos_stats[i]["snippet"]["publishedAt"],
                         view_count=int(
                             videos_stats[i]["statistics"]["viewCount"]),
                         like_count=int(

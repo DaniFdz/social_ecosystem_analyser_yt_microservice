@@ -11,26 +11,32 @@ class TestVideo:
     def test_video_to_dict(self):
         """It should return a dictionary with the video data"""
         video = Video(
+            id="00000",
             topic="Test",
             description="Test",
             title="Test",
+            score=0,
             view_count=0,
             like_count=0,
             comment_count=0,
             favorite_count=0,
             duration="0:00",
             comments=[],
+            published_at="2024-06-13T05:00:23Z",
         )
         assert video.to_dict() == {
+            "id": "00000",
             "topic": "Test",
             "description": "Test",
             "title": "Test",
+            "score": 0,
             "view_count": 0,
             "like_count": 0,
             "comment_count": 0,
             "favorite_count": 0,
             "duration": "0:00",
             "comments": [],
+            "published_at": "2024-06-13T05:00:23Z",
         }
 
 
@@ -41,12 +47,16 @@ class TestComment:
         comment = Comment(
             is_author=True,
             text="Test",
+            score=0,
             like_count=0,
+            published_at="2021-01-01",
         )
         assert comment.to_dict() == {
             "is_author": True,
             "text": "Test",
+            "score": 0,
             "like_count": 0,
+            "published_at": "2021-01-01",
         }
 
 
@@ -76,15 +86,18 @@ class TestApiVideosRepository:
         """It should return True if the videos are added"""
         videos = [
             Video(
+                id="00000",
                 topic="Test",
                 description="Test",
                 title="Test",
+                score=0,
                 view_count=0,
                 like_count=0,
                 comment_count=0,
                 favorite_count=0,
                 duration="0:00",
                 comments=[],
+                published_at="2024-06-13T05:00:23Z",
             )
         ]
         mocker.patch(
@@ -101,15 +114,18 @@ class TestApiVideosRepository:
         """It should return False if the API returns an error"""
         videos = [
             Video(
+                id="00000",
                 topic="Test",
                 description="Test",
                 title="Test",
+                score=0,
                 view_count=0,
                 like_count=0,
                 comment_count=0,
                 favorite_count=0,
                 duration="0:00",
                 comments=[],
+                published_at="2024-06-13T05:00:23Z",
             )
         ]
         mocker.patch(

@@ -33,6 +33,7 @@ def main():
     topics = GetTopics.get_topics()
 
     for t in topics:
+
         next_page_token = ""
         while next_page_token is not None:
             topic = ApiTopicsRepository.get_topic_by_name(t.name)
@@ -45,7 +46,7 @@ def main():
                 ApiTopicsRepository.set_topic_as_finished(topic)
             else:
                 ApiTopicsRepository.save_next_page_token(
-                    topic.name, next_page_token)
+                    topic.name, next_page_token, topic.type)
 
             logging.info(
                 f"Adding {len(videos_data)} videos to the database...")

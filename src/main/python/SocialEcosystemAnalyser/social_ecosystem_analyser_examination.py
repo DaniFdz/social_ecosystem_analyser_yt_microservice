@@ -6,7 +6,10 @@ from time import sleep
 from dotenv import load_dotenv
 
 from .database.health.api_health_repository import ApiHealthRepository
-from .database.reports.api_virustotal_reports_repository import \
+from .database.reports.general.api_general_reports_repository import \
+    ApiGeneralReportsRepository
+from .database.reports.general.general_reports_repository import GeneralReport
+from .database.reports.virustotal.api_virustotal_reports_repository import \
     ApiVirusTotalReportsRepository
 from .database.videos.api_videos_repository import ApiVideosRepository
 from .settings import LOGGING
@@ -45,18 +48,42 @@ def main():
     while 1:
         logging.info(f"Report from page: {page_number}")
 
-        videos = ApiVideosRepository.get_videos(page_number)
+        for video in ApiVideosRepository.get_videos(page_number):
+            report = GeneralReport(
+                id=video.id,
+                topic=video.topic,
+                title=video.title,
+                description=video.description,
+                avg_score=video.score
+                if len(video.comments) == 0 else 0.3 * video.score +
+                0.7 * sum(x.score
+                          for x in video.comments) / len(video.comments),
+                view_count=video.view_count,
+                like_count=video.like_count,
+                published_at=video.published_at,
+                urls_reports=[],
+            )
 
-        for video in videos:
-            url_list = DetectUrl.detect_urls(video)
-            for url in url_list:
+            for url in DetectUrl.detect_urls(video):
+                print(url)
                 url_id = vt_api.get_url_id(url)["data"]["id"].split("-")[1]
-                if not ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
-                        url):
-                    report = vt_api.get_url_report(url_id)
+                virustotal_report = ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
+                    url)
+                if not virustotal_report:
+
+                    virustotal_report = vt_api.get_url_report(url_id)
+                    if virustotal_report is None:
+                        continue
+
                     ApiVirusTotalReportsRepository.add_virustotal_report(
-                        report)
-                    logging.info(f"Report added to the database: {url}")
+                        virustotal_report)
+
+                report.urls_reports.append(virustotal_report)
+
+            print(report)
+            if not ApiGeneralReportsRepository.add_general_report(report):
+                logging.error("Report not added")
+            sleep(5)
 
         page_number += 1
         with open(f"{LOGS_FOLDER}/page_number.txt", "w") as file:

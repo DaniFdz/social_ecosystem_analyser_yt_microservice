@@ -22,7 +22,7 @@ class VTReport:
     last_http_response_code: int
     last_http_response_headers: Dict[str, str]
 
-    def __dict__(self) -> Dict:
+    def to_dict(self) -> Dict:
         return {
             "first_submission_date": self.first_submission_date,
             "last_modification_date": self.last_modification_date,
