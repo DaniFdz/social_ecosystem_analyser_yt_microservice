@@ -27,7 +27,7 @@ class YoutubeAPI:
             "type": "video",
             "order": "title",
             "q": search_query,
-            "maxResults": 2,
+            "maxResults": 50,
             "language": "en",
             "fields": "nextPageToken,items(id(videoId))",
         }
