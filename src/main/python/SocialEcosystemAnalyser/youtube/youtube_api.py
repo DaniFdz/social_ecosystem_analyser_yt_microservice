@@ -157,6 +157,7 @@ class YoutubeAPI:
 
         indexes = []
         for i in range(len(videos_stats["items"])):
+            print("Fetching data for video: ", videos_stats["items"][i]["id"])
             description = videos_stats["items"][i]["snippet"]["description"]
             title = videos_stats["items"][i]["snippet"]["title"]
             try:

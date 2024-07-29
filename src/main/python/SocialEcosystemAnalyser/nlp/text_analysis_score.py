@@ -44,6 +44,7 @@ def get_text_analysis_score(text: str) -> float:
     # model = pipeline('sentiment-analysis',
     #                  model='cardiffnlp/twitter-roberta-base-sentiment-latest')
     # result = model(text)
+    print("Analyzing text: ", text if len(text) < 16 else text[:16] + "...", end="")
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     config = AutoConfig.from_pretrained(MODEL)
@@ -66,4 +67,6 @@ def get_text_analysis_score(text: str) -> float:
         model.config.id2label[ranking[i]]: scores[ranking[i]]
         for i in range(len(scores))
     }
-    return calculate_sentiment_score(classification)
+    score = calculate_sentiment_score(classification)
+    print(" -> Score: ", score)
+    return score

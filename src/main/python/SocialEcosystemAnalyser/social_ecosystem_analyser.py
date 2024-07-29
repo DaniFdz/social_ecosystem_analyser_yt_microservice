@@ -24,12 +24,14 @@ def main():
             "Database is not ready, waiting 10 seconds to retry...")
         sleep(10)
 
+    print("Conected to database")
+
     youtube_api = YoutubeAPI(YOUTUBE_API_KEY)
 
     topics = GetTopics.get_topics()
 
     for t in topics:
-
+        print("Topic: ", t.name)
         next_page_token = ""
         while next_page_token is not None:
             topic = ApiTopicsRepository.get_topic_by_name(t.name)
