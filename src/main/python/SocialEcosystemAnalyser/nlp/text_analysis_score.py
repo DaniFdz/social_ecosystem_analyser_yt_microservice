@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.special import softmax
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
-                          AutoTokenizer, logging)
+                          AutoTokenizer)
 
 
 # Preprocess text
@@ -44,8 +44,6 @@ def get_text_analysis_score(text: str) -> float:
     # model = pipeline('sentiment-analysis',
     #                  model='cardiffnlp/twitter-roberta-base-sentiment-latest')
     # result = model(text)
-
-    logging.set_verbosity_error()
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     config = AutoConfig.from_pretrained(MODEL)

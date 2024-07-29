@@ -4,9 +4,6 @@ from typing import Set
 
 from src.main.python.SocialEcosystemAnalyser.database.videos.videos_repository import \
     Video
-from src.main.python.SocialEcosystemAnalyser.settings import LOGGING
-
-logging.basicConfig(format=LOGGING["formatters"]["standard"]["format"])
 
 
 class DetectUrl:

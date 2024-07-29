@@ -1,4 +1,3 @@
-import logging
 import os
 import sys
 from time import sleep
@@ -12,23 +11,20 @@ from .database.reports.general.general_reports_repository import GeneralReport
 from .database.reports.virustotal.api_virustotal_reports_repository import \
     ApiVirusTotalReportsRepository
 from .database.videos.api_videos_repository import ApiVideosRepository
-from .settings import LOGGING
 from .utils.detect_url import DetectUrl
 from .virustTotal.check_url import VTApi
 
 if not load_dotenv():
-    logging.error("Failed to load .env file")
+    print("Failed to load .env file", file=sys.stderr)
     sys.exit(1)
 
 VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY")
-logging.basicConfig(
-    format=LOGGING["formatters"]["standard"]["format"])  # type: ignore
 
 
 def main():
     """Main program function"""
     while not ApiHealthRepository.check_health():
-        logging.warning(
+        print(
             "Database is not ready, waiting 10 seconds to retry...")
         sleep(10)
 
@@ -46,7 +42,7 @@ def main():
             page_number = int(file.read())
 
     while 1:
-        logging.info(f"Report from page: {page_number}")
+        print(f"Report from page: {page_number}")
 
         for video in ApiVideosRepository.get_videos(page_number):
             report = GeneralReport(
@@ -82,7 +78,7 @@ def main():
 
             print(report)
             if not ApiGeneralReportsRepository.add_general_report(report):
-                logging.error("Report not added")
+                print("Report not added")
             sleep(5)
 
         page_number += 1
