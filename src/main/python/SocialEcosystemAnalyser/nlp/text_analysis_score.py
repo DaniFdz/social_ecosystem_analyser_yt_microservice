@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.special import softmax
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
-                          AutoTokenizer)
+                          AutoTokenizer, logging)
 
 
 # Preprocess text
@@ -18,9 +18,9 @@ MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
 
 
 def calculate_sentiment_score(classification):
-    positive = classification.get('positive', 0)
-    neutral = classification.get('neutral', 0)
-    negative = classification.get('negative', 0)
+    positive = classification.get("positive", 0)
+    neutral = classification.get("neutral", 0)
+    negative = classification.get("negative", 0)
 
     total = positive + neutral + negative
 
@@ -46,15 +46,16 @@ def get_text_analysis_score(text: str) -> float:
     # result = model(text)
     print("Analyzing text: ", text if len(text) < 16 else text[:16] + "...", end="")
 
+    logging.set_verbosity_error()
+
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     config = AutoConfig.from_pretrained(MODEL)
     # PT
     model = AutoModelForSequenceClassification.from_pretrained(MODEL)
     text = preprocess(text)
-    encoded_input = tokenizer(text,
-                              return_tensors="pt",
-                              max_length=512,
-                              truncation=True)
+    encoded_input = tokenizer(
+        text, return_tensors="pt", max_length=512, truncation=True
+    )
     output = model(**encoded_input)
     scores = output[0][0].detach().numpy()
     scores = softmax(scores)
