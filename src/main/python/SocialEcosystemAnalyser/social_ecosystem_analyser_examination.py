@@ -59,6 +59,7 @@ def main():
                 published_at=video.published_at,
                 urls_reports=[],
             )
+            print(f"Calculating report for: {video.id} -> {video.score}")
 
             for url in DetectUrl.detect_urls(video):
                 print(url)
