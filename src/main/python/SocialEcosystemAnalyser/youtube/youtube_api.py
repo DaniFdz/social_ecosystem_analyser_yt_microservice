@@ -86,7 +86,7 @@ class YoutubeAPI:
             "key": self.api_key,
             "part": "id,snippet",
             "videoId": search_query,
-            "maxResults": 100,
+            "maxResults": 10,
             "fields": "items(id,snippet(topLevelComment(snippet(authorDisplayName,authorChannelId,likeCount,publishedAt,textDisplay))))",  # type: ignore # noqa: E501
         }
 
