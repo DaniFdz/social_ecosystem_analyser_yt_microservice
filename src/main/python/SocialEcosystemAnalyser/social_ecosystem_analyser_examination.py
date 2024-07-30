@@ -24,8 +24,7 @@ VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY")
 def main():
     """Main program function"""
     while not ApiHealthRepository.check_health():
-        print(
-            "Database is not ready, waiting 10 seconds to retry...")
+        print("Database is not ready, waiting 10 seconds to retry...")
         sleep(10)
 
     vt_api = VTApi(VIRUSTOTAL_API_KEY)
@@ -44,16 +43,21 @@ def main():
     while 1:
         print(f"Report from page: {page_number}")
 
-        for video in ApiVideosRepository.get_videos(page_number):
+        videos = ApiVideosRepository.get_videos(page_number)
+        if not videos:
+            break
+        for video in videos:
             report = GeneralReport(
                 id=video.id,
                 topic=video.topic,
                 title=video.title,
                 description=video.description,
-                avg_score=video.score
-                if len(video.comments) == 0 else 0.3 * video.score +
-                0.7 * sum(x.score
-                          for x in video.comments) / len(video.comments),
+                avg_score=(
+                    video.score
+                    if len(video.comments) == 0
+                    else 0.3 * video.score
+                    + 0.7 * sum(x.score for x in video.comments) / len(video.comments)
+                ),
                 view_count=video.view_count,
                 like_count=video.like_count,
                 published_at=video.published_at,
@@ -64,8 +68,9 @@ def main():
             for url in DetectUrl.detect_urls(video):
                 print(url)
                 url_id = vt_api.get_url_id(url)["data"]["id"].split("-")[1]
-                virustotal_report = ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
-                    url)
+                virustotal_report = (
+                    ApiVirusTotalReportsRepository.get_virustotal_report_by_url(url)
+                )
                 if not virustotal_report:
 
                     virustotal_report = vt_api.get_url_report(url_id)
@@ -73,7 +78,8 @@ def main():
                         continue
 
                     ApiVirusTotalReportsRepository.add_virustotal_report(
-                        virustotal_report)
+                        virustotal_report
+                    )
 
                 report.urls_reports.append(virustotal_report)
 
