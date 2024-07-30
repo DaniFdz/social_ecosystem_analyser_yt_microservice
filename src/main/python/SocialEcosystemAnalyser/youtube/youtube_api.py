@@ -27,7 +27,7 @@ class YoutubeAPI:
             "type": "video",
             "order": "title",
             "q": search_query,
-            "maxResults": 50,
+            "maxResults": 10,
             "language": "en",
             "fields": "nextPageToken,items(id(videoId))",
         }
@@ -39,60 +39,55 @@ class YoutubeAPI:
         if "error" in res.json():
             if res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
                 raise SocialEcosystemAnalyserException(
-                    MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED)
-            elif "API key not valid" in res.json(
-            )["error"]["errors"][0]["message"]:
+                    MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED
+                )
+            elif "API key not valid" in res.json()["error"]["errors"][0]["message"]:
                 raise SocialEcosystemAnalyserException(
-                    MessageExceptions.YOUTUBE_API_KEY_ERROR)
+                    MessageExceptions.YOUTUBE_API_KEY_ERROR
+                )
             else:
                 raise SocialEcosystemAnalyserException(
-                    MessageExceptions.YOUTUBE_API_ERROR)
+                    MessageExceptions.YOUTUBE_API_ERROR
+                )
 
         return res.json()
 
     def _video_list_stats(self, video_ids: list):
         url = self.base_url + "videos"
         params = {
-            "key":
-            self.api_key,
-            "part":
-            "statistics, contentDetails, snippet",
-            "id":
-            ",".join(video_ids),
-            "fields":
-            "items(id,statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId,publishedAt))",
+            "key": self.api_key,
+            "part": "statistics, contentDetails, snippet",
+            "id": ",".join(video_ids),
+            "fields": "items(id,statistics,contentDetails(duration),snippet(title,description,channelTitle,channelId,publishedAt))",
         }
         res = req.get(url, params=params)
 
         if "error" in res.json():
             if res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
                 raise SocialEcosystemAnalyserException(
-                    MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED)
-            elif "API key not valid" in res.json(
-            )["error"]["errors"][0]["message"]:
+                    MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED
+                )
+            elif "API key not valid" in res.json()["error"]["errors"][0]["message"]:
                 raise SocialEcosystemAnalyserException(
-                    MessageExceptions.YOUTUBE_API_KEY_ERROR)
+                    MessageExceptions.YOUTUBE_API_KEY_ERROR
+                )
             else:
                 raise SocialEcosystemAnalyserException(
-                    MessageExceptions.YOUTUBE_API_ERROR)
+                    MessageExceptions.YOUTUBE_API_ERROR
+                )
 
         return res.json()
 
-    def _comments_list_from_video(self, search_query: str,
-                                  next_page_token: str,
-                                  authorChannelId: str) -> List[Comment]:
+    def _comments_list_from_video(
+        self, search_query: str, next_page_token: str, authorChannelId: str
+    ) -> List[Comment]:
         url = self.base_url + "commentThreads"
         params = {
-            "key":
-            self.api_key,
-            "part":
-            "id,snippet",
-            "videoId":
-            search_query,
-            "maxResults":
-            100,
-            "fields":
-            "items(id,snippet(topLevelComment(snippet(authorDisplayName,authorChannelId,likeCount,publishedAt,textDisplay))))",  # type: ignore # noqa: E501
+            "key": self.api_key,
+            "part": "id,snippet",
+            "videoId": search_query,
+            "maxResults": 100,
+            "fields": "items(id,snippet(topLevelComment(snippet(authorDisplayName,authorChannelId,likeCount,publishedAt,textDisplay))))",  # type: ignore # noqa: E501
         }
 
         if next_page_token != "":
@@ -101,20 +96,20 @@ class YoutubeAPI:
         res = req.get(url, params=params)
 
         if "error" in res.json():
-            if "disabled comments" in res.json(
-            )["error"]["errors"][0]["message"]:
+            if "disabled comments" in res.json()["error"]["errors"][0]["message"]:
                 return []
             elif res.json()["error"]["errors"][0]["reason"] == "quotaExceeded":
                 raise SocialEcosystemAnalyserException(
                     f'{MessageExceptions.YOUTUBE_API_QUOTA_EXCEEDED}: {res.json()["error"]["errors"][0]["message"]}'
                 )
-            elif "API key not valid" in res.json(
-            )["error"]["errors"][0]["message"]:
+            elif "API key not valid" in res.json()["error"]["errors"][0]["message"]:
                 raise SocialEcosystemAnalyserException(
                     f'{MessageExceptions.YOUTUBE_API_KEY_ERROR}: {res.json()["error"]["errors"][0]["message"]}'
                 )
-            elif ("insufficient permissions"
-                  in res.json()["error"]["errors"][0]["message"]):
+            elif (
+                "insufficient permissions"
+                in res.json()["error"]["errors"][0]["message"]
+            ):
                 return []
             else:
                 raise SocialEcosystemAnalyserException(
@@ -124,23 +119,35 @@ class YoutubeAPI:
         data = []
         for x in res.json()["items"]:
             try:
-                if "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"] and \
-                        detect(x["snippet"]["topLevelComment"]["snippet"]["textDisplay"]) == "en":
+                if (
+                    "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"]
+                    and detect(
+                        x["snippet"]["topLevelComment"]["snippet"]["textDisplay"]
+                    )
+                    == "en"
+                ):
                     data.append(
                         Comment(
-                            is_author=x["snippet"]["topLevelComment"]
-                            ["snippet"]["authorChannelId"]["value"] ==
-                            authorChannelId,
-                            text=x["snippet"]["topLevelComment"]["snippet"]
-                            ["textDisplay"],
+                            is_author=x["snippet"]["topLevelComment"]["snippet"][
+                                "authorChannelId"
+                            ]["value"]
+                            == authorChannelId,
+                            text=x["snippet"]["topLevelComment"]["snippet"][
+                                "textDisplay"
+                            ],
                             score=get_text_analysis_score(
-                                x["snippet"]["topLevelComment"]["snippet"]
-                                ["textDisplay"]),
-                            like_count=x["snippet"]["topLevelComment"]
-                            ["snippet"]["likeCount"],
-                            published_at=x["snippet"]["topLevelComment"]
-                            ["snippet"]["publishedAt"],
-                        ))
+                                x["snippet"]["topLevelComment"]["snippet"][
+                                    "textDisplay"
+                                ]
+                            ),
+                            like_count=x["snippet"]["topLevelComment"]["snippet"][
+                                "likeCount"
+                            ],
+                            published_at=x["snippet"]["topLevelComment"]["snippet"][
+                                "publishedAt"
+                            ],
+                        )
+                    )
 
             except:
                 continue
@@ -148,8 +155,8 @@ class YoutubeAPI:
         return data
 
     def get_videos_data(  # noqa: C901
-            self, search_query: str,
-            next_page_token: str) -> Tuple[Optional[str], List[Video]]:
+        self, search_query: str, next_page_token: str
+    ) -> Tuple[Optional[str], List[Video]]:
         videos = self._videos_list_from_topic(search_query, next_page_token)
 
         video_ids = [video["id"]["videoId"] for video in videos["items"]]
@@ -175,7 +182,9 @@ class YoutubeAPI:
         for i, video_id in enumerate(video_ids):
             comments.append(
                 self._comments_list_from_video(
-                    video_id, "", videos_stats[i]["snippet"]["channelId"]))
+                    video_id, "", videos_stats[i]["snippet"]["channelId"]
+                )
+            )
 
         videos_data = []
         for i in range(len(video_ids)):
@@ -190,17 +199,18 @@ class YoutubeAPI:
                             f'{videos_stats[i]["snippet"]["title"]} - {videos_stats[i]["snippet"]["description"]}'
                         ),
                         published_at=videos_stats[i]["snippet"]["publishedAt"],
-                        view_count=int(
-                            videos_stats[i]["statistics"]["viewCount"]),
-                        like_count=int(
-                            videos_stats[i]["statistics"]["likeCount"]),
+                        view_count=int(videos_stats[i]["statistics"]["viewCount"]),
+                        like_count=int(videos_stats[i]["statistics"]["likeCount"]),
                         comment_count=int(
-                            videos_stats[i]["statistics"]["commentCount"]),
+                            videos_stats[i]["statistics"]["commentCount"]
+                        ),
                         favorite_count=int(
-                            videos_stats[i]["statistics"]["favoriteCount"]),
+                            videos_stats[i]["statistics"]["favoriteCount"]
+                        ),
                         duration=videos_stats[i]["contentDetails"]["duration"],
                         comments=comments[i],
-                    ))
+                    )
+                )
             except KeyError:
                 continue
 
