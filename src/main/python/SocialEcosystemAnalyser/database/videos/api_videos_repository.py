@@ -35,8 +35,7 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
             Video(
                 id=video["id"],
                 topic=video["topic"],
-                description=video["description"]
-                if "description" in video else "None",
+                description=video["description"] if "description" in video else "None",
                 score=video["score"],
                 title=video["title"],
                 view_count=video["view_count"],
@@ -44,17 +43,23 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
                 comment_count=video["comment_count"],
                 favorite_count=video["favorite_count"],
                 duration=video["duration"],
-                comments=[
-                    Comment(
-                        is_author=comment["is_author"],
-                        text=comment["text"],
-                        score=comment["score"],
-                        like_count=comment["like_count"],
-                        published_at=comment["published_at"],
-                    ) for comment in video["comments"]
-                ] if "comments" in video else [],
+                comments=(
+                    [
+                        Comment(
+                            is_author=comment["is_author"],
+                            text=comment["text"],
+                            score=comment["score"],
+                            like_count=comment["like_count"],
+                            published_at=comment["published_at"],
+                        )
+                        for comment in video["comments"]
+                    ]
+                    if "comments" in video
+                    else []
+                ),
                 published_at=video["published_at"],
-            ) for video in videos["data"]
+            )
+            for video in videos["data"]
         ]
 
     @classmethod
@@ -67,6 +72,7 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
             "Content-Type": "application/json; charset=utf-8",
         }
 
+        success = True
         for video in videos:
             video_json = json.dumps(video.to_dict())
 
@@ -76,6 +82,6 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
                 headers=headers,
             )
             if response.status_code != 201:
-                return False
+                success = False
 
-        return True
+        return success
