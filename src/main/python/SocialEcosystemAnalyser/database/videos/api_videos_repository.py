@@ -13,7 +13,7 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
     __endpoint = "api/v1/videos/"
 
     @classmethod
-    def get_videos(cls, page_number: Optional[int] = None) -> List[Video]:
+    def get_videos(cls, page_number: Optional[int] = None, page_size: Optional[int] = None) -> List[Video]:
         headers = {
             "Authorization": f"Bearer {cls._token}",
             "Content-Type": "application/json; charset=utf-8",
@@ -22,6 +22,8 @@ class ApiVideosRepository(VideosRepository, ApiRepository):
         url = cls._api + cls.__endpoint
         if page_number is not None:
             url += f"?pageNum={page_number}"
+        if page_size is not None:
+            url += f"&pageSize={page_size}"
         response = r.get(
             url=url,
             headers=headers,
