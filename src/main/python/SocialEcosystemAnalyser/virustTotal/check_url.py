@@ -30,6 +30,7 @@ class VTApi:
         response = requests.post(req_url, data=data, headers=headers)
 
         if response.status_code != 200:
+            print("Error in get_url_id with url: ", url)
             raise SocialEcosystemAnalyserException(
                 MessageExceptions.VIRUSTOTAL_API_ERROR)
 

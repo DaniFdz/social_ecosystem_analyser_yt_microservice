@@ -63,10 +63,9 @@ def main():
                 published_at=video.published_at,
                 urls_reports=[],
             )
-            print(f"Calculating report for: {video.id} -> {video.score}")
+            print(f"Calculating report for video - {video.id}")
 
             for url in DetectUrl.detect_urls(video):
-                print(url)
                 url_id = vt_api.get_url_id(url)["data"]["id"].split("-")[1]
                 virustotal_report = (
                     ApiVirusTotalReportsRepository.get_virustotal_report_by_url(url)
@@ -83,14 +82,16 @@ def main():
 
                 report.urls_reports.append(virustotal_report)
 
-            print(report)
             if not ApiGeneralReportsRepository.add_general_report(report):
-                print("Report not added")
+                print("Report is already in the database")
+            else:
+                print(f"Report for video - {video.id} added to the database")
             sleep(5)
 
         page_number += 1
         with open(f"{LOGS_FOLDER}/page_number.txt", "w") as file:
             file.write(str(page_number))
+        print(f"Saving page number {page_number} to logs")
 
 
 if __name__ == "__main__":
