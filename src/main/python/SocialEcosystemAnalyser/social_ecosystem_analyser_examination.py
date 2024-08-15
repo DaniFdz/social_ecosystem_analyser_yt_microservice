@@ -43,7 +43,7 @@ def main():
     while 1:
         print(f"Report from page: {page_number}")
 
-        videos = ApiVideosRepository.get_videos(page_number)
+        videos = ApiVideosRepository.get_videos(page_number, 5)
         if not videos:
             break
         for video in videos:
