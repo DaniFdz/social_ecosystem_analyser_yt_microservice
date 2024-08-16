@@ -30,6 +30,8 @@ class ApiVirusTotalReportsRepository(VirustotalReportsRepository,
 
         @return: bool: If report was created
         """
+        if report is None:
+            return False
         endpoint = cls._api + cls.__endpoint
         res = r.post(
             endpoint,
