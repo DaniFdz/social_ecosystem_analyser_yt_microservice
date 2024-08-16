@@ -45,22 +45,6 @@ class TestApiTopicsRepository:
         )
         assert ApiTopicsRepository.get_topics() == []
 
-    def test_create_topic(self, mocker):
-        """It should create a topic and return True if the API returns 201"""
-        mocker.patch(
-            "src.main.python.SocialEcosystemAnalyser.database.topics.api_topics_repository.r.post",
-            return_value=type("Response", (object, ), {"status_code": 201}),
-        )
-        assert ApiTopicsRepository.create_topic("topic")
-
-    def test_create_topic_error(self, mocker):
-        """It should return False if the API returns an error"""
-        mocker.patch(
-            "src.main.python.SocialEcosystemAnalyser.database.topics.api_topics_repository.r.post",
-            return_value=type("Response", (object, ), {"status_code": 500}),
-        )
-        assert not ApiTopicsRepository.create_topic("topic")
-
     def test_get_topic_by_name(self, mocker):
         """It should return a topic if the API returns 200"""
         value = {

@@ -5,7 +5,7 @@ class MessageExceptions:
     YOUTUBE_API_QUOTA_EXCEEDED = "Youtube API quota exceeded"
     YOUTUBE_API_INSUFFICIENT_PERMISSIONS = "Youtube API insufficient permissions"
     COHERE_API_ERROR = "Error in Cohere API"
-    VIRUSTOTAL_API_ERROR = "Error in VirusTotal API"
+    VIRUSTOTAL_API_ERROR = "Quota exceeded in VirusTotal API"
     MONGO_CONNECTION_ERROR = "Error connecting to MongoDB"
     MONGO_CLIENT_TYPE_ERROR = "The client value must be a pymongo.MongoClient instance"
     MONGO_DB_TYPE_ERROR = "The db value must be a pymongo.database.Database instance"

@@ -44,7 +44,6 @@ def get_text_analysis_score(text: str) -> float:
     # model = pipeline('sentiment-analysis',
     #                  model='cardiffnlp/twitter-roberta-base-sentiment-latest')
     # result = model(text)
-    print("Analyzing text: ", text if len(text) < 16 else text[:16] + "...", end="")
 
     logging.set_verbosity_error()
 
@@ -69,5 +68,5 @@ def get_text_analysis_score(text: str) -> float:
         for i in range(len(scores))
     }
     score = calculate_sentiment_score(classification)
-    print(" -> Score: ", score)
+    print("Analyzing text... -> Score: ", score)
     return score

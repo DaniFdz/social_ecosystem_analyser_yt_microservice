@@ -30,9 +30,13 @@ class VTApi:
         response = requests.post(req_url, data=data, headers=headers)
 
         if response.status_code != 200:
-            print("Error in get_url_id with url: ", url)
-            raise SocialEcosystemAnalyserException(
-                MessageExceptions.VIRUSTOTAL_API_ERROR)
+            print(f"Error in get_url_id with url: {url}, message {response.text}")
+            if "QuotaExceededError" in response.text:
+                raise SocialEcosystemAnalyserException(
+                    MessageExceptions.VIRUSTOTAL_API_ERROR)
+            else:
+                return None
+
 
         return response.json()
 
@@ -41,10 +45,12 @@ class VTApi:
         req_url = self.base + "urls/" + url  # noqa
         response = requests.get(req_url, headers=headers)
         if response.status_code != 200:
-            if "NotFoundError" in response.text:
+            if "QuotaExceededError" in response.text:
+                print(f"Error in get_url_id with url: {url}, message {response.text}")
+                raise SocialEcosystemAnalyserException(
+                    MessageExceptions.VIRUSTOTAL_API_ERROR)
+            else:
                 return None
-            raise SocialEcosystemAnalyserException(
-                MessageExceptions.VIRUSTOTAL_API_ERROR)
 
         data = response.json()["data"]["attributes"]
 

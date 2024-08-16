@@ -18,7 +18,7 @@ if not load_dotenv():
     print("Failed to load .env file", file=sys.stderr)
     sys.exit(1)
 
-VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY")
+VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY2")
 
 
 def main():
@@ -66,11 +66,16 @@ def main():
             print(f"Calculating report for video - {video.id}")
 
             for url in DetectUrl.detect_urls(video):
-                url_id = vt_api.get_url_id(url)["data"]["id"].split("-")[1]
-                virustotal_report = (
-                    ApiVirusTotalReportsRepository.get_virustotal_report_by_url(url)
-                )
+                print(f"Cheching url - {url}")
+
+                virustotal_report = ApiVirusTotalReportsRepository.get_virustotal_report_by_url(url)
+
                 if not virustotal_report:
+                    url_id = vt_api.get_url_id(url)
+                    if url_id is None:
+                        continue
+                    else:
+                        url_id = url_id["data"]["id"].split("-")[1]
 
                     virustotal_report = vt_api.get_url_report(url_id)
                     if virustotal_report is None:

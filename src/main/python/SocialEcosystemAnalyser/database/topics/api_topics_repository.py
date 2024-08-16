@@ -49,7 +49,6 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
             headers={"Authorization": f"Bearer {cls._token}"},
         )
 
-        print(res.status_code)
         if res.status_code != 200:
             return None
 
@@ -57,28 +56,6 @@ class ApiTopicsRepository(TopicsRepository, ApiRepository):
         return Topic(data["name"], data["finished"],
                      data.get("next_page_token"), data["type"])
 
-    @classmethod
-    def create_topic(cls, topic_name: str) -> bool:
-        """
-        Fetches POST /api/v1/topics/
-
-        @param: topic_name (str): Topic to create
-
-        @return: bool: If the topic was created
-        """
-        endpoint = cls._api + cls.__endpoint
-        res = r.post(
-            endpoint,
-            headers={"Authorization": f"Bearer {cls._token}"},
-            json={
-                "name": topic_name,
-                "finished": False,
-                "next_page_token": "",
-                "type": "topic"
-            },
-        )
-
-        return res.status_code == 201
 
     @classmethod
     def __update_topic(cls, topic: Topic) -> bool:

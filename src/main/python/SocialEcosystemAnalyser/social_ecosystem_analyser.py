@@ -14,7 +14,7 @@ if not load_dotenv():
     print("Failed to load .env file", file=sys.stderr)
     sys.exit(1)
 
-YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")
+YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY2")
 
 
 def main():
@@ -31,7 +31,6 @@ def main():
     topics = GetTopics.get_topics()
 
     for t in topics:
-        print("Topic: ", t.name)
         next_page_token = ""
         while next_page_token is not None:
             topic = ApiTopicsRepository.get_topic_by_name(t.name)
@@ -52,8 +51,7 @@ def main():
             if status:
                 print("Videos added to the database")
             else:
-                print(
-                    "Failed to add one or more videos to the database")
+                print("Failed to add one or more videos to the database")
 
         print(f"Finished topic, next_page_token: {next_page_token}")
 

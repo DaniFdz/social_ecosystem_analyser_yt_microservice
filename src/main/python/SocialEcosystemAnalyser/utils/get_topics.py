@@ -13,5 +13,4 @@ class GetTopics:
         topics = list(
             [t for t in ApiTopicsRepository.get_topics() if not t.finished])
 
-        print(f"Testing topics: {topics}")
         return topics

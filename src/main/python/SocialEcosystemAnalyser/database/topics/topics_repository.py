@@ -25,10 +25,6 @@ class TopicsRepository(ABC):
         pass
 
     @abstractmethod
-    def create_topic(self, topic_name: str) -> bool:
-        pass
-
-    @abstractmethod
     def set_topic_as_finished(cls, topic: Topic) -> bool:
         pass
 
