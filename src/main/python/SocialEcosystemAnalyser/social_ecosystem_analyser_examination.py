@@ -18,7 +18,7 @@ if not load_dotenv():
     print("Failed to load .env file", file=sys.stderr)
     sys.exit(1)
 
-VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY")
+VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY2")
 
 
 def main():
@@ -47,13 +47,14 @@ def main():
 
     try:
         while 1:
-            start_video_time = time()
+
             print(f"Report from page: {page_number}")
 
             videos = ApiVideosRepository.get_videos(page_number, 5)
             if not videos:
                 break
             for video in videos:
+                start_video_time = time()
                 report = GeneralReport(
                     id=video.id,
                     topic=video.topic,
@@ -75,13 +76,12 @@ def main():
                 for url in DetectUrl.detect_urls(video):
                     print(f"Cheching url - {url}")
 
-                    start_vt_time = time()
+
                     virustotal_report = ApiVirusTotalReportsRepository.get_virustotal_report_by_url(url)
-                    elapsed_vt_time = time() - start_vt_time
-                    vt_times.append(elapsed_vt_time)
-                    print("Elapsed time for virustotal report: %.10f seconds." % elapsed_vt_time)
+                    print(f"New virustotal report: {virustotal_report == None}")
 
                     if not virustotal_report:
+                        start_vt_time = time()
                         url_id = vt_api.get_url_id(url)
                         if url_id is None:
                             continue
@@ -89,12 +89,18 @@ def main():
                             url_id = url_id["data"]["id"].split("-")[1]
 
                         virustotal_report = vt_api.get_url_report(url_id)
+
+                        elapsed_vt_time = time() - start_vt_time
+                        vt_times.append(elapsed_vt_time)
+
                         if virustotal_report is None:
                             continue
 
                         ApiVirusTotalReportsRepository.add_virustotal_report(
                             virustotal_report
                         )
+
+                        print("Elapsed time for virustotal report: %.10f seconds." % elapsed_vt_time)
 
                     report.urls_reports.append(virustotal_report)
 
