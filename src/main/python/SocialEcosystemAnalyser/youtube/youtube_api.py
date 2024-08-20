@@ -7,7 +7,7 @@ from langdetect import detect
 from src.main.python.SocialEcosystemAnalyser.database.videos.videos_repository import (
     Comment, Video)
 from src.main.python.SocialEcosystemAnalyser.nlp.text_analysis_score import \
-    get_text_analysis_score
+    TextAnalysisScore
 
 from ..exceptions.social_ecosystem_analyser_exception import \
     SocialEcosystemAnalyserException
@@ -18,6 +18,7 @@ class YoutubeAPI:
     def __init__(self, api_key: str, version: str = "v3"):
         self.api_key = api_key
         self.base_url = f"https://www.googleapis.com/youtube/{version}/"
+        self.sentimental_analysis = TextAnalysisScore()
 
     def _videos_list_from_topic(self, search_query: str, next_page_token: str):
         url = self.base_url + "search"
@@ -135,7 +136,7 @@ class YoutubeAPI:
                             text=x["snippet"]["topLevelComment"]["snippet"][
                                 "textDisplay"
                             ],
-                            score=get_text_analysis_score(
+                            score=self.sentimental_analysis.get_text_analysis_score(
                                 x["snippet"]["topLevelComment"]["snippet"][
                                     "textDisplay"
                                 ]
@@ -195,7 +196,7 @@ class YoutubeAPI:
                         topic=search_query,
                         description=videos_stats[i]["snippet"]["description"],
                         title=videos_stats[i]["snippet"]["title"],
-                        score=get_text_analysis_score(
+                        score=self.sentimental_analysis.get_text_analysis_score(
                             f'{videos_stats[i]["snippet"]["title"]} - {videos_stats[i]["snippet"]["description"]}'
                         ),
                         published_at=videos_stats[i]["snippet"]["publishedAt"],

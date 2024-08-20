@@ -1,6 +1,6 @@
 import os
 import sys
-from time import sleep
+from time import sleep, time
 
 from dotenv import load_dotenv
 
@@ -14,7 +14,7 @@ if not load_dotenv():
     print("Failed to load .env file", file=sys.stderr)
     sys.exit(1)
 
-YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY2")
+YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")
 
 
 def main():
@@ -35,6 +35,9 @@ def main():
         while next_page_token is not None:
             topic = ApiTopicsRepository.get_topic_by_name(t.name)
             print(f"Topic: {topic.name}")
+
+            start_youtube_time = time()
+
             next_page_token, videos_data = youtube_api.get_videos_data(
                 topic.name, topic.next_page_token)
 
@@ -48,6 +51,12 @@ def main():
             print(
                 f"Adding {len(videos_data)} videos to the database...")
             status = ApiVideosRepository.add_videos(videos_data)
+
+            elapsed_youtube_time = time() - start_youtube_time
+            print(f"Elapsed time for youtube: {elapsed_youtube_time} seconds")
+            print(f"Videos data collection: {len(videos_data)}")
+            print(f"Average time per video: {elapsed_youtube_time / len(videos_data)}")
+
             if status:
                 print("Videos added to the database")
             else:

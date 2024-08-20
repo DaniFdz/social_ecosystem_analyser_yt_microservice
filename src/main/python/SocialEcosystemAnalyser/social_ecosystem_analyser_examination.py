@@ -1,6 +1,6 @@
 import os
 import sys
-from time import sleep
+from time import sleep, time
 
 from dotenv import load_dotenv
 
@@ -18,7 +18,7 @@ if not load_dotenv():
     print("Failed to load .env file", file=sys.stderr)
     sys.exit(1)
 
-VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY2")
+VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY")
 
 
 def main():
@@ -40,64 +40,85 @@ def main():
         with open(f"{LOGS_FOLDER}/page_number.txt", "r") as file:
             page_number = int(file.read())
 
-    while 1:
-        print(f"Report from page: {page_number}")
+    start_page_number = page_number
+    start_global_time = time()
+    vt_times = []
+    video_times = []
 
-        videos = ApiVideosRepository.get_videos(page_number, 5)
-        if not videos:
-            break
-        for video in videos:
-            report = GeneralReport(
-                id=video.id,
-                topic=video.topic,
-                title=video.title,
-                description=video.description,
-                avg_score=(
-                    video.score
-                    if len(video.comments) == 0
-                    else 0.3 * video.score
-                    + 0.7 * sum(x.score for x in video.comments) / len(video.comments)
-                ),
-                view_count=video.view_count,
-                like_count=video.like_count,
-                published_at=video.published_at,
-                urls_reports=[],
-            )
-            print(f"Calculating report for video - {video.id}")
+    try:
+        while 1:
+            start_video_time = time()
+            print(f"Report from page: {page_number}")
 
-            for url in DetectUrl.detect_urls(video):
-                print(f"Cheching url - {url}")
+            videos = ApiVideosRepository.get_videos(page_number, 5)
+            if not videos:
+                break
+            for video in videos:
+                report = GeneralReport(
+                    id=video.id,
+                    topic=video.topic,
+                    title=video.title,
+                    description=video.description,
+                    avg_score=(
+                        video.score
+                        if len(video.comments) == 0
+                        else 0.3 * video.score
+                        + 0.7 * sum(x.score for x in video.comments) / len(video.comments)
+                    ),
+                    view_count=video.view_count,
+                    like_count=video.like_count,
+                    published_at=video.published_at,
+                    urls_reports=[],
+                )
+                print(f"Calculating report for video - {video.id}")
 
-                virustotal_report = ApiVirusTotalReportsRepository.get_virustotal_report_by_url(url)
+                for url in DetectUrl.detect_urls(video):
+                    print(f"Cheching url - {url}")
 
-                if not virustotal_report:
-                    url_id = vt_api.get_url_id(url)
-                    if url_id is None:
-                        continue
-                    else:
-                        url_id = url_id["data"]["id"].split("-")[1]
+                    start_vt_time = time()
+                    virustotal_report = ApiVirusTotalReportsRepository.get_virustotal_report_by_url(url)
+                    elapsed_vt_time = time() - start_vt_time
+                    vt_times.append(elapsed_vt_time)
+                    print("Elapsed time for virustotal report: %.10f seconds." % elapsed_vt_time)
 
-                    virustotal_report = vt_api.get_url_report(url_id)
-                    if virustotal_report is None:
-                        continue
+                    if not virustotal_report:
+                        url_id = vt_api.get_url_id(url)
+                        if url_id is None:
+                            continue
+                        else:
+                            url_id = url_id["data"]["id"].split("-")[1]
 
-                    ApiVirusTotalReportsRepository.add_virustotal_report(
-                        virustotal_report
-                    )
+                        virustotal_report = vt_api.get_url_report(url_id)
+                        if virustotal_report is None:
+                            continue
 
-                report.urls_reports.append(virustotal_report)
+                        ApiVirusTotalReportsRepository.add_virustotal_report(
+                            virustotal_report
+                        )
 
-            if not ApiGeneralReportsRepository.add_general_report(report):
-                print("Report is already in the database")
-            else:
-                print(f"Report for video - {video.id} added to the database")
-            sleep(5)
+                    report.urls_reports.append(virustotal_report)
 
-        page_number += 1
-        with open(f"{LOGS_FOLDER}/page_number.txt", "w") as file:
-            file.write(str(page_number))
-        print(f"Saving page number {page_number} to logs")
+                if not ApiGeneralReportsRepository.add_general_report(report):
+                    print("Report is already in the database")
+                else:
+                    print(f"Report for video - {video.id} added to the database")
 
+                elapsed_video_time = time() - start_video_time
+                video_times.append(elapsed_video_time)
+                print("Elapsed time for video: %.10f seconds." % elapsed_video_time)
+                sleep(5)
+
+            page_number += 1
+            with open(f"{LOGS_FOLDER}/page_number.txt", "w") as file:
+                file.write(str(page_number))
+            print(f"Saving page number {page_number} to logs")
+    except Exception as e:
+        elapsed_global_time = time() - start_global_time
+        print("Elapsed global time: %.10f seconds." % elapsed_global_time)
+        print("Average time for virustotal report: %.10f seconds." % (sum(vt_times)/len(vt_times)))
+        print("Number of virustotal reports: %d" % len(vt_times))
+        print("Average time for video: %.10f seconds." % (sum(video_times)/len(video_times)))
+        print(f"Finished page: {start_page_number} - {page_number}, a total of {(page_number - start_page_number)*5} videos")
 
 if __name__ == "__main__":
     main()
