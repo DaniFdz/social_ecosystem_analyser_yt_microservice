@@ -13,7 +13,10 @@ class TestReport:
         """It should return True if the report exists"""
         mocker.patch(
             "src.main.python.SocialEcosystemAnalyser.database.reports.virustotal.api_virustotal_reports_repository.r.get",
-            return_value=type("Response", (object, ), {"status_code": 200}),
+            return_value=type("Response", (object, ), {
+                "status_code": 200,
+                "json": lambda: []
+            }),
         )
         assert ApiVirusTotalReportsRepository.get_virustotal_report_by_url(
             "Test")

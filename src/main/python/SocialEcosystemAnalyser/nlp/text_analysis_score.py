@@ -59,6 +59,5 @@ class TextAnalysisScore:
         }
         score = self.calculate_sentiment_score(classification)
         elapsed_sa_time = time() - start_sa_time
-        print(f"Elapsed time for sentiment analysis: {elapsed_sa_time} seconds")
-        print("Analyzing text... -> Score: ", score)
+        print(f"\033[;36mElapsed time for sentiment analysis: {elapsed_sa_time} seconds\033[0;m")
         return score

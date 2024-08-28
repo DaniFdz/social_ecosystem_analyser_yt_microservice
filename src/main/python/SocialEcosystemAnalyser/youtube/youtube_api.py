@@ -122,7 +122,7 @@ class YoutubeAPI:
             try:
                 if (
                     "authorChannelId" in x["snippet"]["topLevelComment"]["snippet"]
-                    and detect(
+                    and x["snippet"]["topLevelComment"]["snippet"]["textDisplay"] and detect(
                         x["snippet"]["topLevelComment"]["snippet"]["textDisplay"]
                     )
                     == "en"
@@ -163,21 +163,12 @@ class YoutubeAPI:
         video_ids = [video["id"]["videoId"] for video in videos["items"]]
         videos_stats = self._video_list_stats(video_ids)
 
-        indexes = []
-        for i in range(len(videos_stats["items"])):
-            print("Fetching video: ", videos_stats["items"][i]["id"])
-            description = videos_stats["items"][i]["snippet"]["description"]
-            title = videos_stats["items"][i]["snippet"]["title"]
-            try:
-                if detect(description) == "en":
-                    indexes.append(i)
-                if detect(title) == "en":
-                    indexes.append(i)
-            except:
-                continue
+        indexes = self._filter_english_videos(videos_stats)
 
         video_ids = [video_ids[i] for i in indexes]
         videos_stats = [videos_stats["items"][i] for i in indexes]
+
+        print(f"VideoIds ({len(video_ids)}): {video_ids}")
 
         comments = []
         for i, video_id in enumerate(video_ids):
@@ -201,9 +192,9 @@ class YoutubeAPI:
                         ),
                         published_at=videos_stats[i]["snippet"]["publishedAt"],
                         view_count=int(videos_stats[i]["statistics"]["viewCount"]),
-                        like_count=int(videos_stats[i]["statistics"]["likeCount"]),
+                        like_count=int(videos_stats[i]["statistics"]["likeCount"] if "likeCount" in videos_stats[i]["statistics"] else 0),
                         comment_count=int(
-                            videos_stats[i]["statistics"]["commentCount"]
+                            videos_stats[i]["statistics"]["commentCount"] if "commentCount" in videos_stats[i]["statistics"] else 0
                         ),
                         favorite_count=int(
                             videos_stats[i]["statistics"]["favoriteCount"]
@@ -212,10 +203,24 @@ class YoutubeAPI:
                         comments=comments[i],
                     )
                 )
-            except KeyError:
+            except KeyError as e:
+                print(f'\033[;31mError: {videos_stats[i]["id"]} - {e}\033[0;m')
                 continue
 
         if "nextPageToken" not in videos:
             return None, videos_data
 
         return videos["nextPageToken"], videos_data
+
+    def _filter_english_videos(self, videos_stats):
+        indexes = []
+        for i in range(len(videos_stats["items"])):
+            title = videos_stats["items"][i]["snippet"]["title"]
+            description = videos_stats["items"][i]["snippet"]["description"]
+            try:
+                if detect(title) == "en" or detect(description) == "en":
+                    indexes.append(i)
+            except:
+                continue
+
+        return indexes

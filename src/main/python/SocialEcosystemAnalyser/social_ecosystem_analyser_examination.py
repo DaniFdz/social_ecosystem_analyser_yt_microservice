@@ -48,7 +48,7 @@ def main():
     try:
         while 1:
 
-            print(f"Report from page: {page_number}")
+            print(f"\033[;35mReport from page: {page_number}\033[0;m")
 
             videos = ApiVideosRepository.get_videos(page_number, 5)
             if not videos:
@@ -74,11 +74,7 @@ def main():
                 print(f"Calculating report for video - {video.id}")
 
                 for url in DetectUrl.detect_urls(video):
-                    print(f"Cheching url - {url}")
-
-
                     virustotal_report = ApiVirusTotalReportsRepository.get_virustotal_report_by_url(url)
-                    print(f"New virustotal report: {virustotal_report == None}")
 
                     if not virustotal_report:
                         start_vt_time = time()
@@ -100,31 +96,28 @@ def main():
                             virustotal_report
                         )
 
-                        print("Elapsed time for virustotal report: %.10f seconds." % elapsed_vt_time)
-
                     report.urls_reports.append(virustotal_report)
 
                 if not ApiGeneralReportsRepository.add_general_report(report):
-                    print("Report is already in the database")
+                    print("\033[;33mReport is already in the database\033[0;m")
                 else:
-                    print(f"Report for video - {video.id} added to the database")
+                    print(f"\033[;32mReport for video - {video.id} added to the database\033[0;m")
 
                 elapsed_video_time = time() - start_video_time
                 video_times.append(elapsed_video_time)
-                print("Elapsed time for video: %.10f seconds." % elapsed_video_time)
                 sleep(5)
 
             page_number += 1
             with open(f"{LOGS_FOLDER}/page_number.txt", "w") as file:
                 file.write(str(page_number))
-            print(f"Saving page number {page_number} to logs")
+
     except Exception as e:
         elapsed_global_time = time() - start_global_time
-        print("Elapsed global time: %.10f seconds." % elapsed_global_time)
-        print("Average time for virustotal report: %.10f seconds." % (sum(vt_times)/len(vt_times)))
-        print("Number of virustotal reports: %d" % len(vt_times))
-        print("Average time for video: %.10f seconds." % (sum(video_times)/len(video_times)))
-        print(f"Finished page: {start_page_number} - {page_number}, a total of {(page_number - start_page_number)*5} videos")
+        print("\033[;36mElapsed global time: %.10f seconds.\033[0;m" % elapsed_global_time)
+        print("\033[;36mAverage time for virustotal report: %.10f seconds.\033[0;m" % (sum(vt_times)/len(vt_times) if len(vt_times) > 0 else 0))
+        print("\033[;36mNumber of virustotal reports: %d\033[0;m" % len(vt_times))
+        print("\033[;36mAverage time for video: %.10f seconds.\033[0;m" % (sum(video_times)/len(video_times) if len(video_times) > 0 else 0))
+        print(f"\033[;36mFinished page: {start_page_number} - {page_number}, a total of {(page_number - start_page_number)*5} videos\033[0;m")
 
 if __name__ == "__main__":
     main()

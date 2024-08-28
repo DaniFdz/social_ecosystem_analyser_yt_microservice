@@ -30,7 +30,7 @@ class VTApi:
         response = requests.post(req_url, data=data, headers=headers)
 
         if response.status_code != 200:
-            print(f"Error in get_url_id with url: {url}, message {response.text}")
+            print(f"\033[;31mError in get_url_id with url: {url}, message {response.text}\033[0;m")
             if "QuotaExceededError" in response.text:
                 raise SocialEcosystemAnalyserException(
                     MessageExceptions.VIRUSTOTAL_API_ERROR)
@@ -46,7 +46,7 @@ class VTApi:
         response = requests.get(req_url, headers=headers)
         if response.status_code != 200:
             if "QuotaExceededError" in response.text:
-                print(f"Error in get_url_id with url: {url}, message {response.text}")
+                print(f"\033[;31mError in get_url_id with url: {url}, message {response.text}\033[0;m")
                 raise SocialEcosystemAnalyserException(
                     MessageExceptions.VIRUSTOTAL_API_ERROR)
             else:
